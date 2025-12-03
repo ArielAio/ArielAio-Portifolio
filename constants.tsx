@@ -20,8 +20,8 @@ export const HERO_CONTENT = {
   pt: {
     greeting: "Olá, eu sou o",
     name: "Ariel André Aio",
-    role: "COO & Desenvolvedor Full Stack",
-    description: "Co-fundador da Skyiit. Combino visão estratégica de negócios com capacidade técnica em React, Node.js e Laravel para criar soluções digitais escaláveis e de alto impacto.",
+    role: "COO & Desenvolvedor em Crescimento",
+    description: "Co-fundador da Skyiit. Combino visão estratégica de negócios com habilidades técnicas em desenvolvimento web para transformar ideias em produtos digitais reais. Experiência profissional com React, Laravel e banco de dados + projetos pessoais com Next.js.",
     ctaProjects: "Ver Projetos",
     ctaContact: "Entrar em Contato",
     ctaResume: "Baixar PDF",
@@ -30,8 +30,8 @@ export const HERO_CONTENT = {
   en: {
     greeting: "Hello, I am",
     name: "Ariel André Aio",
-    role: "COO & Full Stack Developer",
-    description: "Co-founder of Skyiit. I combine strategic business vision with technical expertise in React, Node.js, and Laravel to create scalable and high-impact digital solutions.",
+    role: "COO & Growing Developer",
+    description: "Co-founder of Skyiit. I combine strategic business vision with technical skills in web development to transform ideas into real digital products. Professional experience with React, Laravel, and databases + personal projects with Next.js.",
     ctaProjects: "View Projects",
     ctaContact: "Get in Touch",
     ctaResume: "Download PDF",
@@ -43,17 +43,17 @@ export const ABOUT_CONTENT = {
   pt: {
     title: "Sobre Mim",
     services: [
-      { title: "Desenvolvimento Full Stack", icon: Code, description: "Criação de aplicações web completas usando React, Node.js e Laravel." },
-      { title: "Gestão de Produtos", icon: Smartphone, description: "Liderança técnica e estratégica para transformar ideias em produtos digitais." },
-      { title: "Banco de Dados", icon: Database, description: "Modelagem e otimização de dados com PostgreSQL, MySQL e Firebase." },
+      { title: "Desenvolvimento Web", icon: Code, description: "Experiência profissional com React, Laravel e TypeScript na EnterScience. Projetos pessoais com Next.js e Firebase." },
+      { title: "Gestão de Produtos", icon: Smartphone, description: "Coordenação operacional e visão estratégica como COO para transformar ideias em produtos viáveis." },
+      { title: "Banco de Dados", icon: Database, description: "Experiência em manutenção de PostgreSQL em ambiente de produção e projetos com Firebase." },
     ]
   },
   en: {
     title: "About Me",
     services: [
-      { title: "Full Stack Development", icon: Code, description: "Creation of complete web applications using React, Node.js, and Laravel." },
-      { title: "Product Management", icon: Smartphone, description: "Technical and strategic leadership to transform ideas into digital products." },
-      { title: "Database Management", icon: Database, description: "Data modeling and optimization with PostgreSQL, MySQL, and Firebase." },
+      { title: "Web Development", icon: Code, description: "Professional experience with React, Laravel, and TypeScript at EnterScience. Personal projects with Next.js and Firebase." },
+      { title: "Product Management", icon: Smartphone, description: "Operational coordination and strategic vision as COO to transform ideas into viable products." },
+      { title: "Database Management", icon: Database, description: "Experience in PostgreSQL maintenance in production environments and projects with Firebase." },
     ]
   }
 };
@@ -291,110 +291,122 @@ export const SKILLS_CONTENT = {
   pt: {
     title: "Stack ",
     titleHighlight: "Tecnológico",
-    description: "Ferramentas que utilizo no dia a dia para transformar problemas complexos em soluções escaláveis e performáticas.",
+    description: "Tecnologias que venho desenvolvendo através de experiência profissional e projetos pessoais.",
     skills: [
       {
-        name: "React / Next.js",
-        time: "+2 anos",
-        category: 'frontend',
-        description: "Desenvolvimento de SPAs complexas, Dashboards administrativos e otimização de renderização (SSR/CSR)."
-      },
-      {
-        name: "JavaScript / TypeScript",
-        time: "+3 anos",
-        category: 'frontend',
-        description: "Tipagem estática para código escalável, manipulação avançada de DOM e lógica assíncrona."
-      },
-      {
-        name: "Node.js",
-        time: "+2 anos",
-        category: 'backend',
-        description: "Criação de APIs RESTful, microsserviços e integração com sistemas de pagamento e autenticação."
-      },
-      {
         name: "Laravel / PHP",
-        time: "+2 anos",
+        time: "1 ano (profissional)",
         category: 'backend',
-        description: "Manutenção de sistemas legados, arquitetura MVC robusta e desenvolvimento de aplicações institucionais."
+        description: "Experiência profissional: manutenção de sistemas em produção, correção de bugs e implementação de features no site institucional da EnterScience."
       },
       {
         name: "PostgreSQL / MySQL",
-        time: "+2 anos",
+        time: "1 ano (profissional)",
         category: 'backend',
-        description: "Modelagem de bancos relacionais, otimização de queries complexas e garantia de integridade de dados."
+        description: "Manutenção de banco de dados PostgreSQL em ambiente de produção durante estágio na EnterScience."
+      },
+      {
+        name: "React",
+        time: "1 ano (prof.) + 1 ano (pessoal)",
+        category: 'frontend',
+        description: "Implementação de features no site da EnterScience + projetos pessoais (sistemas de agendamento, dashboards)."
+      },
+      {
+        name: "TypeScript",
+        time: "1 ano (prof.) + 1 ano (pessoal)",
+        category: 'frontend',
+        description: "Uso profissional na EnterScience e em projetos pessoais. Conhecimento intermediário de tipagem e interfaces."
+      },
+      {
+        name: "Next.js",
+        time: "1 ano (pessoal)",
+        category: 'frontend',
+        description: "Projetos pessoais: plataformas EAD e dashboards com SSR/CSR. Desenvolvimento com auxílio de IA e documentação."
       },
       {
         name: "Firebase",
-        time: "+1 ano",
+        time: "1 ano (pessoal)",
         category: 'backend',
-        description: "Implementação de bancos NoSQL em tempo real, autenticação social e hosting de aplicações."
+        description: "Implementação em projetos pessoais: autenticação, banco de dados em tempo real e hosting."
+      },
+      {
+        name: "Node.js",
+        time: "1 ano (pessoal)",
+        category: 'backend',
+        description: "Projetos pessoais com criação de APIs básicas e integrações simples."
       },
       {
         name: "Git / GitHub",
-        time: "+3 anos",
+        time: "2 anos",
         category: 'tools',
-        description: "Controle de versão em equipe, code review, CI/CD básico e gestão de fluxo de trabalho (Git Flow)."
+        description: "Controle de versão individual e em equipe. Experiência com commits, branches e pull requests."
       },
       {
         name: "Metodologias Ágeis",
-        time: "+2 anos",
+        time: "2 anos",
         category: 'tools',
-        description: "Organização de sprints, dailies e gestão de backlog utilizando ferramentas como Trello/Jira."
+        description: "Aplicação em estágio (EnterScience), projetos pessoais e como COO (Skyiit). Experiência com Scrum, sprints e gestão de fluxo via Linear."
       },
     ]
   },
   en: {
     title: "Tech ",
     titleHighlight: "Stack",
-    description: "Tools I use daily to transform complex problems into scalable and performant solutions.",
+    description: "Technologies I've been developing through professional experience and personal projects.",
     skills: [
       {
-        name: "React / Next.js",
-        time: "+2 years",
-        category: 'frontend',
-        description: "Development of complex SPAs, Admin Dashboards, and rendering optimization (SSR/CSR)."
-      },
-      {
-        name: "JavaScript / TypeScript",
-        time: "+3 years",
-        category: 'frontend',
-        description: "Static typing for scalable code, advanced DOM manipulation, and asynchronous logic."
-      },
-      {
-        name: "Node.js",
-        time: "+2 years",
-        category: 'backend',
-        description: "Creation of RESTful APIs, microservices, and integration with payment and authentication systems."
-      },
-      {
         name: "Laravel / PHP",
-        time: "+2 years",
+        time: "1 year (professional)",
         category: 'backend',
-        description: "Maintenance of legacy systems, robust MVC architecture, and development of institutional applications."
+        description: "Professional experience: maintenance of production systems, bug fixes, and feature implementation on EnterScience's institutional website."
       },
       {
         name: "PostgreSQL / MySQL",
-        time: "+2 years",
+        time: "1 year (professional)",
         category: 'backend',
-        description: "Relational database modeling, complex query optimization, and data integrity assurance."
+        description: "PostgreSQL database maintenance in production environment during internship at EnterScience."
+      },
+      {
+        name: "React",
+        time: "1 year (prof.) + 1 year (personal)",
+        category: 'frontend',
+        description: "Feature implementation at EnterScience + personal projects (scheduling systems, dashboards)."
+      },
+      {
+        name: "TypeScript",
+        time: "1 year (prof.) + 1 year (personal)",
+        category: 'frontend',
+        description: "Professional use at EnterScience and in personal projects. Intermediate knowledge of typing and interfaces."
+      },
+      {
+        name: "Next.js",
+        time: "1 year (personal)",
+        category: 'frontend',
+        description: "Personal projects: e-learning platforms and dashboards with SSR/CSR. Development with AI assistance and documentation."
       },
       {
         name: "Firebase",
-        time: "+1 year",
+        time: "1 year (personal)",
         category: 'backend',
-        description: "Implementation of real-time NoSQL databases, social authentication, and application hosting."
+        description: "Implementation in personal projects: authentication, real-time database, and hosting."
+      },
+      {
+        name: "Node.js",
+        time: "1 year (personal)",
+        category: 'backend',
+        description: "Personal projects with basic API creation and simple integrations."
       },
       {
         name: "Git / GitHub",
-        time: "+3 years",
+        time: "2 years",
         category: 'tools',
-        description: "Team version control, code review, basic CI/CD, and workflow management (Git Flow)."
+        description: "Individual and team version control. Experience with commits, branches, and pull requests."
       },
       {
         name: "Agile Methodologies",
-        time: "+2 years",
+        time: "2 years",
         category: 'tools',
-        description: "Organization of sprints, dailies, and backlog management using tools like Trello/Jira."
+        description: "Applied in internship (EnterScience), personal projects, and as COO (Skyiit). Experience with Scrum, sprints, and workflow management via Linear."
       },
     ]
   }
