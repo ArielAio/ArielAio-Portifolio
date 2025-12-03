@@ -20,7 +20,7 @@ const AppContent: React.FC = () => {
     restDelta: 0.001
   });
 
-  const { tier, isLowPower, isLoading, completeLoading } = usePerformance();
+  const { tier, isLowPower, isLoading, completeLoading, enableParticles, enable3D } = usePerformance();
 
   // PERFORMANCE OPTIMIZATION: 
   // Use MotionValues for high-frequency updates (mouse move).
@@ -121,7 +121,7 @@ const AppContent: React.FC = () => {
     default: {
         height: 32,
         width: 32,
-        backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0)", // Use rgba instead of transparent
         border: "1px solid rgba(255,255,255,0.3)",
         x: "-50%",
         y: "-50%",
@@ -132,7 +132,7 @@ const AppContent: React.FC = () => {
     button: {
         height: 60,
         width: 60,
-        backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0)", // Use rgba instead of transparent
         border: "2px solid #6366f1",
         x: "-50%",
         y: "-50%",
@@ -150,13 +150,13 @@ const AppContent: React.FC = () => {
         y: "-50%",
         scale: 1,
         opacity: 0.8,
-        borderRadius: 2,
+        borderRadius: "2px", // Add px unit
         mixBlendMode: "normal" as "normal"
     }
   };
 
-  // Determine Particle Count based on Tier
-  const particleCount = tier === 'high' ? 60 : (tier === 'medium' ? 30 : 0);
+  // Determine Particle Count based on enableParticles flag
+  const particleCount = enableParticles ? (tier === 'high' ? 60 : 30) : 0;
 
   return (
     <div className={`bg-dark min-h-screen text-white selection:bg-primary selection:text-white ${isDesktop ? 'cursor-none' : ''}`}>
