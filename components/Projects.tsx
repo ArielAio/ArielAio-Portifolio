@@ -112,12 +112,12 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
                 </div>
             </div>
 
-            <div className="pointer-events-auto overflow-hidden transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 md:max-h-0 md:group-hover:max-h-[200px]">
+            <div className="pointer-events-auto transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 md:max-h-0 md:group-hover:max-h-[200px]">
                 <p className="text-gray-300 text-sm mb-6 line-clamp-3 md:line-clamp-none drop-shadow-md">
                     {project.description}
                 </p>
                 
-                <div className="flex gap-4 pb-2 relative z-10">
+                <div className="flex gap-4 pb-2 relative z-10 overflow-visible">
                     <motion.a 
                         href={project.link} 
                         target="_blank" 
