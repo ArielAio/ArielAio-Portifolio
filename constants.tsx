@@ -72,7 +72,7 @@ export const EXPERIENCE_CONTENT = {
         description: "Co-fundador da holding Skyiit, responsável pelo produto digital Memoryiit, consolidado no mercado de presentes digitais em menos de 1 ano.",
         projectLink: "https://memoryiit.com",
         details: [
-          "Condução de operações internas da empresa: organização de demandas, gestão de produtividade e acompanhamento do time de desenvolvimento (3 devs).",
+          "Coordenação de operações internas: organização de demandas, gestão de fluxo de trabalho e acompanhamento do time técnico (3 devs) utilizando metodologias ágeis (Scrum/Kanban) e Linear.",
           "Criação e edição de conteúdos digitais para campanhas de marketing em redes sociais.",
           "Atendimento direto ao cliente e suporte pós-venda, com foco em satisfação e retenção.",
           "Estruturação de processos de marketing, operações e produto visando crescimento escalável."
@@ -121,7 +121,7 @@ export const EXPERIENCE_CONTENT = {
         description: "Co-founder of the Skyiit holding, responsible for the digital product Memoryiit, consolidated in the digital gifts market in less than 1 year.",
         projectLink: "https://memoryiit.com",
         details: [
-          "Leading internal company operations: organizing demands, productivity management, and monitoring the development team (3 devs).",
+          "Internal operations coordination: organizing demands, workflow management, and monitoring the technical team (3 devs) using Agile methodologies (Scrum/Kanban) and Linear.",
           "Creation and editing of digital content for social media marketing campaigns.",
           "Direct customer service and post-sales support, focusing on satisfaction and retention.",
           "Structuring marketing, operations, and product processes aiming for scalable growth."
@@ -164,12 +164,12 @@ export const FEATURED_PROJECT = {
     sectionTitle: "Projeto em Destaque",
     title: "Memoryiit — Plataforma de Presentes Digitais",
     subtitle: "COO & Co-Fundador | Skyiit",
-    description: "Como COO e Co-fundador da Skyiit, liderei o desenvolvimento e lançamento do Memoryiit, produto consolidado no mercado de presentes digitais em menos de 1 ano.",
+    description: "Como COO e Co-fundador da Skyiit, coordenei o lançamento e operação do Memoryiit, produto consolidado no mercado de presentes digitais em menos de 1 ano.",
     responsibilities: [
-      "Gestão de operações e time de 3 desenvolvedores",
-      "Estratégia de marketing e crescimento em redes sociais",
-      "Atendimento ao cliente e experiência pós-venda",
-      "Estruturação de processos escaláveis para produto e operações"
+      "Gestão de fluxo de trabalho e organização do time técnico (3 devs) com metodologias ágeis (Scrum/Kanban)",
+      "Estruturação de processos operacionais e acompanhamento de entregas via Linear",
+      "Estratégia de marketing digital e crescimento orgânico em redes sociais",
+      "Gestão de relacionamento com clientes, suporte pós-venda e otimização da experiência do usuário"
     ],
     tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
     image: "/memoryiit.png",
@@ -181,12 +181,12 @@ export const FEATURED_PROJECT = {
     sectionTitle: "Featured Project",
     title: "Memoryiit — Digital Gifts Platform",
     subtitle: "COO & Co-Founder | Skyiit",
-    description: "As COO and Co-founder of Skyiit, I led the development and launch of Memoryiit, a product consolidated in the digital gifts market in less than 1 year.",
+    description: "As COO and Co-founder of Skyiit, I coordinated the launch and operations of Memoryiit, a product consolidated in the digital gifts market in less than 1 year.",
     responsibilities: [
-      "Operations management and team leadership (3 developers)",
-      "Marketing strategy and social media growth",
-      "Customer service and post-sales experience",
-      "Structuring scalable processes for product and operations"
+      "Workflow management and technical team coordination (3 devs) using Agile methodologies (Scrum/Kanban)",
+      "Operational process structuring and delivery tracking via Linear",
+      "Digital marketing strategy and organic growth on social media",
+      "Customer relationship management, post-sales support, and user experience optimization"
     ],
     tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
     image: "/memoryiit.png",
