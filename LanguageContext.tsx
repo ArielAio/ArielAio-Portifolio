@@ -18,6 +18,25 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState<Language | null>(null);
 
+  const toggleLanguage = () => {
+    const nextLang = language === 'pt' ? 'en' : 'pt';
+    
+    // Set target language FIRST (for display in transition)
+    setTargetLanguage(nextLang);
+    setIsTransitioning(true);
+    
+    // Wait for expand animation (600ms)
+    setTimeout(() => {
+      setLanguage(nextLang); // Change language
+      
+      // Wait a bit then start reveal (200ms pause at full cover)
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setTargetLanguage(null); // Clear target after transition
+      }, 200);
+    }, 600);
+  };
+
   const startTransition = (callback: () => void) => {
     setIsTransitioning(true);
     
@@ -31,15 +50,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         setTargetLanguage(null); // Clear target after transition
       }, 200);
     }, 600);
-  };
-
-  const toggleLanguage = () => {
-    const nextLang = language === 'pt' ? 'en' : 'pt';
-    setTargetLanguage(nextLang); // Set target BEFORE transition starts
-    
-    startTransition(() => {
-      setLanguage(nextLang);
-    });
   };
 
   return (
