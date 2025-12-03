@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowDown, Download } from 'lucide-react';
@@ -13,7 +14,14 @@ const MagneticButton = ({ children, onClick, href, className, variant = "outline
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
 
+  // 3D Tilt Transforms - Map movement pixels to degrees
+  const rotateX = useTransform(springY, [-20, 20], [15, -15]); // Mouse Down -> Tilt Top (Looks at mouse)
+  const rotateY = useTransform(springX, [-20, 20], [-15, 15]); // Mouse Right -> Tilt Left
+
   const handleMouseMove = (e: React.MouseEvent) => {
+    // Disable magnetic effect on touch devices to save battery
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
+
     if (!ref.current) return;
     const { clientX, clientY } = e;
     const { height, width, left, top } = ref.current.getBoundingClientRect();
@@ -35,26 +43,39 @@ const MagneticButton = ({ children, onClick, href, className, variant = "outline
       ref={ref}
       href={href}
       onClick={onClick}
-      style={{ x: springX, y: springY }}
+      style={{ 
+        x: springX, 
+        y: springY,
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d"
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className={`${className} relative overflow-hidden group perspective-1000 transform-style-3d`}
+      className={`${className} relative overflow-visible group perspective-500`}
     >
-      <span className="relative z-10">{children}</span>
+      {/* Content Layer - Pushed forward for parallax depth */}
+      <motion.span 
+        className="relative z-10 block" 
+        style={{ transform: "translateZ(15px)" }}
+      >
+        {children}
+      </motion.span>
       
       {/* Light Sweep Gradient Effect - Runs on Hover */}
       <motion.div 
          initial={{ x: "-100%", opacity: 0 }}
          whileHover={{ x: "150%", opacity: 1 }}
          transition={{ duration: 0.8, ease: "easeInOut" }}
-         className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 pointer-events-none"
+         className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 pointer-events-none rounded-[inherit]"
+         style={{ transform: "translateZ(1px)" }}
       />
       
-      {/* 3D Reflection/Sheen - Static */}
+      {/* 3D Reflection/Sheen */}
       <motion.div 
-         className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+         className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[inherit]"
          style={{ transform: "translateZ(-1px)" }}
       />
     </motion.a>
@@ -174,16 +195,17 @@ const Hero: React.FC = () => {
           <motion.a
             href="/Curriculo_Ariel_Aio.pdf" 
             download="Curriculo_Ariel_Aio.pdf"
-            whileHover={{ scale: 1.05, y: -5, z: 20 }}
+            whileHover={{ scale: 1.05, y: -5, z: 20, rotateX: 10 }}
             whileTap={{ scale: 0.95, z: -10 }}
             className="flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all group backdrop-blur-sm cursor-pointer transform-style-3d shadow-lg"
+            style={{ transformStyle: "preserve-3d" }}
           >
              <div className="p-2 bg-primary/20 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                 <Download size={18} />
              </div>
              <div className="text-left">
-                <span className="block text-[10px] text-gray-400 font-mono uppercase tracking-wider leading-none mb-1">Currículo</span>
-                <span className="block text-sm font-bold text-white group-hover:text-primary transition-colors leading-none">Baixar PDF</span>
+                <span className="block text-[10px] text-gray-400 font-mono uppercase tracking-wider leading-none mb-1" style={{ transform: "translateZ(5px)" }}>Currículo</span>
+                <span className="block text-sm font-bold text-white group-hover:text-primary transition-colors leading-none" style={{ transform: "translateZ(10px)" }}>Baixar PDF</span>
              </div>
           </motion.a>
 
@@ -194,9 +216,9 @@ const Hero: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 10, 0] }}
         transition={{ delay: 1.5, duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 pointer-events-none"
+        className="hidden md:block absolute bottom-10 left-1/2 transform -translate-x-1/2 pointer-events-none"
       >
-        <ArrowDown className="text-gray-500 w-6 h-6" />
+        <ArrowDown className="text-gray-400/70 w-6 h-6" />
       </motion.div>
     </section>
   );

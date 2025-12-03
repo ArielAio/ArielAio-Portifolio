@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIALS } from '../constants';
@@ -71,37 +72,53 @@ const Contact: React.FC = () => {
 
               {/* Copy Email Component */}
               <motion.div 
-                className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/20 transition-colors cursor-pointer mb-8 group relative overflow-hidden"
+                className="flex items-center gap-3 p-4 rounded-xl border transition-colors cursor-pointer mb-8 group relative overflow-hidden"
                 onClick={handleCopyEmail}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                initial={{ backgroundColor: "rgba(255, 255, 255, 0.05)", borderColor: "rgba(255, 255, 255, 0.05)" }}
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                whileTap={{ scale: 0.97 }}
+                animate={{
+                    borderColor: copied ? "rgba(34, 197, 94, 0.5)" : "rgba(255, 255, 255, 0.05)",
+                    backgroundColor: copied ? "rgba(34, 197, 94, 0.1)" : "rgba(255, 255, 255, 0.05)"
+                }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                
-                <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors relative z-10">
+                {/* Shine effect on copy */}
+                {copied && (
+                    <motion.div 
+                        initial={{ x: "-100%", opacity: 0 }}
+                        animate={{ x: "200%", opacity: 0.5 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent skew-x-12"
+                    />
+                )}
+
+                <div className={`p-2 rounded-lg transition-colors relative z-10 ${copied ? "bg-green-500/20 text-green-400" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"}`}>
                     <Mail size={20} />
                 </div>
                 <div className="flex-1 relative z-10">
-                    <p className="text-xs text-gray-500 font-mono">Email</p>
+                    <p className={`text-xs font-mono transition-colors ${copied ? "text-green-400 font-bold" : "text-gray-500"}`}>
+                        {copied ? "Copiado!" : "Email"}
+                    </p>
                     <p className="text-sm md:text-base text-gray-200 font-mono">arielaio@hotmail.com</p>
                 </div>
-                <div className="p-2 text-gray-400 group-hover:text-white transition-colors relative z-10">
+                <div className={`p-2 transition-colors relative z-10 ${copied ? "text-green-400" : "text-gray-400 group-hover:text-white"}`}>
                     <AnimatePresence mode="wait">
                         {copied ? (
                             <motion.div
                                 key="check"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                exit={{ scale: 0 }}
+                                initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
+                                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                                exit={{ scale: 0.5, opacity: 0 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
                             >
-                                <Check size={20} className="text-green-500" />
+                                <Check size={20} />
                             </motion.div>
                         ) : (
                             <motion.div
                                 key="copy"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                exit={{ scale: 0 }}
+                                initial={{ scale: 0.5, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.5, opacity: 0 }}
                             >
                                 <Copy size={20} />
                             </motion.div>

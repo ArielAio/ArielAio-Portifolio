@@ -27,6 +27,9 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
   const iconY = useSpring(useTransform(yPct, [0, 1], [-6, 6]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Disable interactions on touch devices
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
+
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     

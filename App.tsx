@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -161,7 +162,8 @@ const App: React.FC = () => {
         
         {/* Ambient Moving Orbs (Living Background) - Optimized with GPU transform */}
         <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[128px] animate-blob gpu-accelerated"></div>
-        <div className="absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[128px] animate-blob animation-delay-4000 gpu-accelerated"></div>
+        {/* Second blob hidden on mobile to reduce overdraw and improve performance */}
+        <div className="hidden md:block absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[128px] animate-blob animation-delay-4000 gpu-accelerated"></div>
         <div className="hidden md:block absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[128px] animate-blob animation-delay-2000 gpu-accelerated"></div>
 
         {/* Particles / Fireflies Effect - Reduced on mobile */}

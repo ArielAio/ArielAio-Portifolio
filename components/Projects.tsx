@@ -26,6 +26,9 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
   const glareY = useTransform(y, [0, 1], [0, 100]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    // Disable tilt on touch devices to save battery
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
+
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
@@ -115,14 +118,21 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                 </p>
                 
                 <div className="flex gap-4 pb-2">
-                    <a 
+                    <motion.a 
                         href={project.link} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/80 transition-all shadow-lg hover:shadow-primary/30 active:scale-95"
+                        whileHover={{ 
+                            scale: 1.05, 
+                            backgroundColor: "#4f46e5", // Slightly darker/richer indigo
+                            boxShadow: "0 0 20px rgba(99, 102, 241, 0.6)" // Glow effect
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg transition-colors"
                     >
                         <ExternalLink size={16} /> Demo
-                    </a>
+                    </motion.a>
                     {project.githubRepo && (
                         <motion.a 
                             href={project.githubRepo} 
@@ -130,12 +140,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                             rel="noopener noreferrer"
                             whileHover={{ 
                                 scale: 1.05, 
-                                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                                boxShadow: "0 0 15px rgba(255, 255, 255, 0.2)"
+                                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                                borderColor: "rgba(255, 255, 255, 0.5)",
+                                boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)"
                             }}
                             whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-lg text-sm font-bold backdrop-blur-md border border-white/10 shadow-lg"
+                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-lg text-sm font-bold backdrop-blur-md border border-white/10 shadow-lg transition-colors"
                         >
                             <Github size={16} /> Code
                         </motion.a>
