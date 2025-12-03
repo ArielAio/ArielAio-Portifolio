@@ -21,7 +21,7 @@ const FeaturedProject: React.FC = React.memo(() => {
   const content = FEATURED_PROJECT[language];
 
   return (
-    <section className="py-24 bg-transparent relative z-20">
+    <section id="featured-project" className="py-24 bg-transparent relative z-20">
       <div className="container mx-auto px-6">
         
         {/* Section Header */}

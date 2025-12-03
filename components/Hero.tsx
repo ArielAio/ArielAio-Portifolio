@@ -182,8 +182,8 @@ const Hero: React.FC = React.memo(() => {
         >
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full transform-style-3d">
             <MagneticButton
-              href="#projects"
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleScroll(e, 'projects')}
+              href="#featured-project"
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleScroll(e, 'featured-project')}
               className="inline-flex h-12 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#6366f1,55%,#000103)] bg-[length:200%_100%] px-8 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-slate-50 cursor-pointer shadow-lg w-full sm:w-auto"
             >
               {content.ctaProjects}
