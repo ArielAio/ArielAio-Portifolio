@@ -43,6 +43,9 @@ const AppContent: React.FC = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [cursorVariant, setCursorVariant] = useState('default');
   const [clickWaves, setClickWaves] = useState<{id: number, x: number, y: number}[]>([]);
+  
+  // OPTIMIZATION: Cache cursor variant to prevent unnecessary re-renders
+  const cursorVariantRef = React.useRef('default');
 
   useEffect(() => {
     // Only run complex mouse logic on Desktop AND if not Low Power tier
@@ -50,6 +53,10 @@ const AppContent: React.FC = () => {
     const shouldEnableCursor = mediaQuery.matches && !isLowPower;
     
     setIsDesktop(shouldEnableCursor);
+
+    // OPTIMIZATION: Debounce cursor variant checks to reduce re-renders
+    let rafId: number;
+    let lastVariant = 'default';
 
     const handleMouseMove = (e: MouseEvent) => {
       // Update MotionValues directly
@@ -59,32 +66,39 @@ const AppContent: React.FC = () => {
       // Context Aware Logic - Skip on low power to reduce DOM checks per frame
       if (isLowPower) return;
 
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName === 'BUTTON' || 
-        target.tagName === 'A' || 
-        target.closest('button') || 
-        target.closest('a') ||
-        target.getAttribute('role') === 'button' ||
-        target.classList.contains('cursor-pointer')
-      ) {
-        setCursorVariant('button');
-      } 
-      else if (
-        target.tagName === 'P' || 
-        target.tagName === 'SPAN' || 
-        target.tagName === 'H1' || 
-        target.tagName === 'H2' || 
-        target.tagName === 'H3' || 
-        target.tagName === 'H4' || 
-        target.tagName === 'INPUT' || 
-        target.tagName === 'TEXTAREA' ||
-        target.tagName === 'LI'
-      ) {
-        setCursorVariant('text');
-      } else {
-        setCursorVariant('default');
-      }
+      // OPTIMIZATION: Use RAF to batch cursor variant updates
+      if (rafId) return;
+      
+      rafId = requestAnimationFrame(() => {
+        const target = e.target as HTMLElement;
+        let newVariant = 'default';
+        
+        if (
+          target.tagName === 'BUTTON' || 
+          target.tagName === 'A' || 
+          target.closest('button') || 
+          target.closest('a') ||
+          target.getAttribute('role') === 'button' ||
+          target.classList.contains('cursor-pointer')
+        ) {
+          newVariant = 'button';
+        } 
+        else if (
+          target.tagName === 'INPUT' || 
+          target.tagName === 'TEXTAREA'
+        ) {
+          newVariant = 'text';
+        }
+        
+        // Only update if variant actually changed
+        if (newVariant !== lastVariant) {
+          lastVariant = newVariant;
+          cursorVariantRef.current = newVariant;
+          setCursorVariant(newVariant);
+        }
+        
+        rafId = 0 as unknown as number;
+      });
     };
 
     const handleClick = (e: MouseEvent) => {
@@ -99,7 +113,7 @@ const AppContent: React.FC = () => {
     };
 
     if (shouldEnableCursor) {
-      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mousemove", handleMouseMove, { passive: true });
       window.addEventListener("mousedown", handleClick);
     }
 
@@ -107,7 +121,7 @@ const AppContent: React.FC = () => {
         const newIsDesktop = e.matches && !isLowPower;
         setIsDesktop(newIsDesktop);
         if (newIsDesktop) {
-            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mousemove", handleMouseMove, { passive: true });
             window.addEventListener("mousedown", handleClick);
         } else {
             window.removeEventListener("mousemove", handleMouseMove);
@@ -118,6 +132,7 @@ const AppContent: React.FC = () => {
     mediaQuery.addEventListener('change', handleChange);
 
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleClick);
       mediaQuery.removeEventListener('change', handleChange);
@@ -193,12 +208,12 @@ const AppContent: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-radial from-primary/5 to-transparent opacity-50"></div>
         ) : (
             <>
-                <div className={`absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[64px] md:blur-[128px] animate-blob gpu-accelerated`}></div>
+                <div className={`absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[48px] md:blur-[64px] animate-blob`} style={{ willChange: 'transform' }}></div>
                 
                 {tier !== 'low' && (
                     <>
-                        <div className="hidden md:block absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[64px] md:blur-[128px] animate-blob animation-delay-4000 gpu-accelerated"></div>
-                        <div className="hidden md:block absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[64px] md:blur-[128px] animate-blob animation-delay-2000 gpu-accelerated"></div>
+                        <div className="hidden md:block absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[48px] md:blur-[64px] animate-blob animation-delay-4000" style={{ willChange: 'transform' }}></div>
+                        <div className="hidden md:block absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[48px] md:blur-[64px] animate-blob animation-delay-2000" style={{ willChange: 'transform' }}></div>
                     </>
                 )}
             </>

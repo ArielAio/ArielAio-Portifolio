@@ -184,10 +184,16 @@ export const PerformanceProvider: React.FC<{ children: ReactNode }> = ({ childre
           rafId = requestAnimationFrame(benchmark);
         } else {
           const fps = (frameCount / elapsed) * 1000;
+          // OPTIMIZATION: Cancel RAF immediately after calculation
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = 0 as unknown as number;
+          }
           finalizeTier(fps);
         }
       } catch (error) {
         console.error("Benchmark error:", error);
+        if (rafId) cancelAnimationFrame(rafId);
         finalizeTier(60); 
       }
     };

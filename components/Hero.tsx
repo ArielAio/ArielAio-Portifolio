@@ -14,6 +14,9 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
+  
+  // OPTIMIZATION: Cache rect to avoid getBoundingClientRect on every mousemove
+  const rectCacheRef = useRef<DOMRect | null>(null);
 
   const springConfig = { damping: 15, stiffness: 200 };
   const springX = useSpring(x, springConfig);
@@ -23,8 +26,10 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if ((typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) || isLowPower) return;
 
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
+    if (!ref.current || !rectCacheRef.current) return;
+    
+    // Use cached rect instead of calling getBoundingClientRect every frame
+    const rect = rectCacheRef.current;
     const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
     const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
     
@@ -35,6 +40,11 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
   const handleMouseEnter = () => {
     setIsHovered(true);
     scale.set(1.05);
+    
+    // OPTIMIZATION: Cache rect on enter to avoid repeated getBoundingClientRect calls
+    if (ref.current) {
+      rectCacheRef.current = ref.current.getBoundingClientRect();
+    }
   };
 
   const handleMouseLeave = () => {
@@ -42,6 +52,7 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
     springX.set(0);
     springY.set(0);
     scale.set(1);
+    rectCacheRef.current = null;
   };
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {

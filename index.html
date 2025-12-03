@@ -32,18 +32,18 @@
             },
             keyframes: {
               blob: {
-                '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                '0%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+                '33%': { transform: 'translate3d(30px, -50px, 0) scale(1.1)' },
+                '66%': { transform: 'translate3d(-20px, 20px, 0) scale(0.9)' },
+                '100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
               },
               shimmer: {
                 from: { backgroundPosition: '0 0' },
                 to: { backgroundPosition: '-200% 0' }
               },
               float: {
-                '0%, 100%': { transform: 'translate(0, 0)' },
-                '50%': { transform: 'translate(-20px, -20px)' },
+                '0%, 100%': { transform: 'translate3d(0, 0, 0)' },
+                '50%': { transform: 'translate3d(-20px, -20px, 0)' },
               },
               twinkle: {
                 '0%, 100%': { opacity: '1', transform: 'scale(1)' },
@@ -102,16 +102,19 @@
         pointer-events: none;
       }
 
-      /* Hardware Acceleration Class */
+      /* Hardware Acceleration Class - OPTIMIZATION: Removed will-change from default state */
       .gpu-accelerated {
         transform: translateZ(0);
-        will-change: transform, opacity;
         backface-visibility: hidden;
+      }
+      
+      /* Only apply will-change on hover/interaction to save GPU memory */
+      .gpu-accelerated:hover, .gpu-accelerated:focus {
+        will-change: transform;
       }
 
       /* Blob Animation Optimization */
       .blob-anim {
-        will-change: transform;
         transform: translate3d(0,0,0); /* Force GPU */
       }
 

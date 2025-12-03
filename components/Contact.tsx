@@ -25,10 +25,11 @@ const Contact: React.FC = React.memo(() => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleCopyEmail = () => {
@@ -248,24 +249,19 @@ const Contact: React.FC = React.memo(() => {
                 }`}>
                   {content.formName}
                 </label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 ${
-                      theme === 'dark'
-                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
-                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
-                    } shadow-lg`}
-                    placeholder={content.formNamePlaceholder} 
-                  />
-                  <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
-                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
-                  }`}></div>
-                </div>
+                <input 
+                  type="text" 
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-[border-color,background-color,box-shadow] duration-200 ${
+                    theme === 'dark'
+                      ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]'
+                      : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  } shadow-lg`}
+                  placeholder={content.formNamePlaceholder} 
+                />
               </div>
               
               <div className="group">
@@ -276,24 +272,19 @@ const Contact: React.FC = React.memo(() => {
                 }`}>
                   {content.formEmail}
                 </label>
-                <div className="relative">
-                  <input 
-                    type="email" 
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 ${
-                      theme === 'dark'
-                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
-                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
-                    } shadow-lg`}
-                    placeholder={content.formEmailPlaceholder} 
-                  />
-                   <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
-                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
-                  }`}></div>
-                </div>
+                <input 
+                  type="email" 
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-[border-color,background-color,box-shadow] duration-200 ${
+                    theme === 'dark'
+                      ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]'
+                      : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  } shadow-lg`}
+                  placeholder={content.formEmailPlaceholder} 
+                />
               </div>
               
               <div className="group">
@@ -304,24 +295,19 @@ const Contact: React.FC = React.memo(() => {
                 }`}>
                   {content.formMessage}
                 </label>
-                <div className="relative">
-                  <textarea 
-                    name="message"
-                    required
-                    rows={5} 
-                    value={formData.message}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 resize-none ${
-                      theme === 'dark'
-                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
-                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
-                    } shadow-lg`}
-                    placeholder={content.formMessagePlaceholder}
-                  ></textarea>
-                   <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
-                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
-                  }`}></div>
-                </div>
+                <textarea 
+                  name="message"
+                  required
+                  rows={5} 
+                  value={formData.message}
+                  onChange={handleChange}
+                  className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-[border-color,background-color,box-shadow] duration-200 resize-none ${
+                    theme === 'dark'
+                      ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]'
+                      : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  } shadow-lg`}
+                  placeholder={content.formMessagePlaceholder}
+                ></textarea>
               </div>
               
               <motion.button 

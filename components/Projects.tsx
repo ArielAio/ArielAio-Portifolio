@@ -16,6 +16,9 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
 
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
+  
+  // OPTIMIZATION: Cache rect to avoid repeated getBoundingClientRect calls
+  const rectCacheRef = useRef<DOMRect | null>(null);
 
   const springConfig = { stiffness: 250, damping: 20, mass: 0.5 };
   
@@ -34,8 +37,10 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
     // Disable tilt on touch devices OR low power
     if ((typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) || isLowPower) return;
 
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
+    // OPTIMIZATION: Use cached rect instead of calling getBoundingClientRect every frame
+    if (!ref.current || !rectCacheRef.current) return;
+    
+    const rect = rectCacheRef.current;
     const width = rect.width;
     const height = rect.height;
     
@@ -45,10 +50,18 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
     x.set(mouseX);
     y.set(mouseY);
   };
+  
+  const handleMouseEnter = () => {
+    // OPTIMIZATION: Cache rect on enter to avoid repeated getBoundingClientRect calls
+    if (ref.current) {
+      rectCacheRef.current = ref.current.getBoundingClientRect();
+    }
+  };
 
   const handleMouseLeave = () => {
     x.set(0.5);
     y.set(0.5);
+    rectCacheRef.current = null;
   };
 
   // If low power, remove the 3D transforms
@@ -66,6 +79,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`group relative rounded-2xl ${theme === 'dark' ? 'bg-dark/50' : 'bg-white/95'} perspective-1000 h-[450px] w-full isolate ${
         project.type === 'leadership' 
