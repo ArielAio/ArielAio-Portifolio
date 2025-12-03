@@ -3,11 +3,12 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Experience from './components/Experience';
+import FeaturedProject from './components/FeaturedProject'; // NEW: Memoryiit showcase
 import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import LoadingScreen from './components/LoadingScreen';
-import LanguageTransition from './components/LanguageTransition'; // NEW: Circular reveal transition
+import LanguageTransition from './components/LanguageTransition'; // Circular reveal transition
 import { Particles } from './components/Particles';
 import { motion, useScroll, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
 import { LanguageProvider } from './LanguageContext';
@@ -285,6 +286,7 @@ const AppContent: React.FC = () => {
             <Hero />
             <About />
             <Experience />
+            <FeaturedProject />
             <Projects />
             <Skills />
             <Contact />

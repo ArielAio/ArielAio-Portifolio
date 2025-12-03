@@ -20,8 +20,8 @@ export const HERO_CONTENT = {
   pt: {
     greeting: "Olá, eu sou o",
     name: "Ariel André Aio",
-    role: "COO da Memoryiit | Full Stack Developer",
-    description: "Co-fundador da Skyiit, responsável pelo produto Memoryiit — consolidado no mercado de presentes digitais em menos de 1 ano. Combino visão estratégica de negócios com expertise técnica em React, Node.js e Laravel.",
+    role: "COO & Desenvolvedor Full Stack",
+    description: "Co-fundador da Skyiit. Combino visão estratégica de negócios com capacidade técnica em React, Node.js e Laravel para criar soluções digitais escaláveis e de alto impacto.",
     ctaProjects: "Ver Projetos",
     ctaContact: "Entrar em Contato",
     ctaResume: "Baixar PDF",
@@ -30,8 +30,8 @@ export const HERO_CONTENT = {
   en: {
     greeting: "Hello, I am",
     name: "Ariel André Aio",
-    role: "COO at Memoryiit | Full Stack Developer",
-    description: "Co-founder of Skyiit, responsible for the Memoryiit product — consolidated in the digital gifts market in less than 1 year. I combine strategic business vision with technical expertise in React, Node.js, and Laravel.",
+    role: "COO & Full Stack Developer",
+    description: "Co-founder of Skyiit. I combine strategic business vision with technical expertise in React, Node.js, and Laravel to create scalable and high-impact digital solutions.",
     ctaProjects: "View Projects",
     ctaContact: "Get in Touch",
     ctaResume: "Download PDF",
@@ -159,6 +159,43 @@ export const EXPERIENCE_CONTENT = {
   }
 };
 
+export const FEATURED_PROJECT = {
+  pt: {
+    sectionTitle: "Projeto em Destaque",
+    title: "Memoryiit — Plataforma de Presentes Digitais",
+    subtitle: "COO & Co-Fundador | Skyiit",
+    description: "Como COO e Co-fundador da Skyiit, liderei o desenvolvimento e lançamento do Memoryiit, produto consolidado no mercado de presentes digitais em menos de 1 ano.",
+    responsibilities: [
+      "Gestão de operações e time de 3 desenvolvedores",
+      "Estratégia de marketing e crescimento em redes sociais",
+      "Atendimento ao cliente e experiência pós-venda",
+      "Estruturação de processos escaláveis para produto e operações"
+    ],
+    tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
+    image: "/memoryiit.png",
+    link: "https://memoryiit.com",
+    badge: "🚀 Em Produção",
+    cta: "Visitar Projeto"
+  },
+  en: {
+    sectionTitle: "Featured Project",
+    title: "Memoryiit — Digital Gifts Platform",
+    subtitle: "COO & Co-Founder | Skyiit",
+    description: "As COO and Co-founder of Skyiit, I led the development and launch of Memoryiit, a product consolidated in the digital gifts market in less than 1 year.",
+    responsibilities: [
+      "Operations management and team leadership (3 developers)",
+      "Marketing strategy and social media growth",
+      "Customer service and post-sales experience",
+      "Structuring scalable processes for product and operations"
+    ],
+    tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
+    image: "/memoryiit.png",
+    link: "https://memoryiit.com",
+    badge: "🚀 In Production",
+    cta: "Visit Project"
+  }
+};
+
 export const PROJECTS_CONTENT = {
   pt: {
     title: "Projetos Recentes",
@@ -166,16 +203,6 @@ export const PROJECTS_CONTENT = {
     demo: "Demo",
     code: "Código",
     projects: [
-      {
-        id: 0,
-        title: "Memoryiit — Plataforma de Presentes Digitais",
-        description: "Como COO e Co-fundador da Skyiit, liderei o desenvolvimento e lançamento do Memoryiit, produto consolidado no mercado de presentes digitais em menos de 1 ano. Responsável por gestão de operações e time (3 devs), estratégia de marketing em redes sociais, atendimento ao cliente e estruturação de processos escaláveis.",
-        tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
-        image: "/memoryiit.png",
-        link: "https://memoryiit.com",
-        type: "leadership",
-        badge: "🚀 Em Produção",
-      },
       {
         id: 1,
         title: "Sistema para Barbearias",
@@ -220,16 +247,6 @@ export const PROJECTS_CONTENT = {
     demo: "Demo",
     code: "Code",
     projects: [
-      {
-        id: 0,
-        title: "Memoryiit — Digital Gifts Platform",
-        description: "As COO and Co-founder of Skyiit, I led the development and launch of Memoryiit, a product consolidated in the digital gifts market in less than 1 year. Responsible for operations management and team leadership (3 devs), social media marketing strategy, customer service, and structuring scalable processes.",
-        tags: ["Product Management", "Operations", "Team Leadership", "Marketing"],
-        image: "/memoryiit.png",
-        link: "https://memoryiit.com",
-        type: "leadership",
-        badge: "🚀 In Production",
-      },
       {
         id: 1,
         title: "Barbershop System",
