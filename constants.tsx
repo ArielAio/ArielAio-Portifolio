@@ -171,7 +171,7 @@ export const PROJECTS_CONTENT = {
         tags: ["Next.js", "Firebase", "SaaS", "Agendamentos"],
         image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=800",
         link: "https://barber-agenda.vercel.app",
-        githubRepo: "https://github.com/ArielAio?tab=repositories",
+        githubRepo: "https://github.com/ArielAio/Barber.git",
       },
       {
         id: 2,
@@ -180,7 +180,7 @@ export const PROJECTS_CONTENT = {
         tags: ["Next.js", "Gestão de Academia", "Dashboard Administrativo", "SaaS"],
         image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800",
         link: "https://strike-system.vercel.app/signIn",
-        githubRepo: "https://github.com/ArielAio?tab=repositories",
+        githubRepo: "https://github.com/ArielAio/strike.git",
       },
       {
         id: 3,
@@ -189,7 +189,7 @@ export const PROJECTS_CONTENT = {
         tags: ["IA", "Chatbot", "NLP", "API Sabiá 3", "Integração de API"],
         image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=800",
         link: "https://chat-bot-gules-chi.vercel.app",
-        githubRepo: "https://github.com/ArielAio?tab=repositories",
+        githubRepo: "https://github.com/ArielAio/ChatBot.git",
       },
       {
         id: 4,
@@ -198,7 +198,7 @@ export const PROJECTS_CONTENT = {
         tags: ["Next.js", "LMS", "Educação Online"],
         image: "/CodeWise.png",
         link: "http://codewise-liart.vercel.app/",
-        githubRepo: "https://github.com/ArielAio?tab=repositories",
+        githubRepo: "https://github.com/ArielAio/codewise.git",
       },
     ]
   },
