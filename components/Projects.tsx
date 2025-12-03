@@ -15,8 +15,9 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
 
   const springConfig = { stiffness: 250, damping: 20, mass: 0.5 };
   
-  const rotateY = useSpring(useTransform(x, [0, 1], [-10, 10]), springConfig);
-  const rotateX = useSpring(useTransform(y, [0, 1], [10, -10]), springConfig);
+  // Reduced rotation for more subtle effect (was -10 to 10, now -4 to 4)
+  const rotateY = useSpring(useTransform(x, [0, 1], [-4, 4]), springConfig);
+  const rotateX = useSpring(useTransform(y, [0, 1], [4, -4]), springConfig);
 
   const glareX = useTransform(x, [0, 1], [0, 100]);
   const glareY = useTransform(y, [0, 1], [0, 100]);
@@ -65,7 +66,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
       className="group relative rounded-2xl bg-dark/50 border border-white/5 perspective-1000 h-[450px] w-full isolate" 
     >
       <div 
-        style={!isLowPower ? { transform: "translateZ(50px)", transformStyle: "preserve-3d" } : {}}
+        style={!isLowPower ? { transform: "translateZ(20px)", transformStyle: "preserve-3d" } : {}}
         className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl bg-dark"
       >
         {/* Image Layer */}
@@ -95,8 +96,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
 
         {/* Content Container - z-30 to stay above glare effect */}
         <div 
-            className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none transform-style-3d z-30"
-            style={!isLowPower ? { transform: "translateZ(60px)" } : {}} 
+            className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none z-30"
         >
             <div className="pointer-events-auto transform transition-transform duration-300 md:translate-y-8 md:group-hover:translate-y-0">
                 <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg" style={{ textShadow: "0 4px 10px rgba(0,0,0,0.5)" }}>
