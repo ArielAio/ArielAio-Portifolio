@@ -7,6 +7,7 @@ interface LanguageContextType {
   setLanguage: (lang: Language) => void;
   toggleLanguage: () => void;
   isTransitioning: boolean;
+  targetLanguage: Language | null; // Language being transitioned TO
   startTransition: (callback: () => void) => void;
 }
 
@@ -15,6 +16,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('pt');
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [targetLanguage, setTargetLanguage] = useState<Language | null>(null);
 
   const startTransition = (callback: () => void) => {
     setIsTransitioning(true);
@@ -26,18 +28,22 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       // Wait a bit then start reveal (200ms pause at full cover)
       setTimeout(() => {
         setIsTransitioning(false);
+        setTargetLanguage(null); // Clear target after transition
       }, 200);
     }, 600);
   };
 
   const toggleLanguage = () => {
+    const nextLang = language === 'pt' ? 'en' : 'pt';
+    setTargetLanguage(nextLang); // Set target BEFORE transition starts
+    
     startTransition(() => {
-      setLanguage((prev) => (prev === 'pt' ? 'en' : 'pt'));
+      setLanguage(nextLang);
     });
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, isTransitioning, startTransition }}>
+    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, isTransitioning, targetLanguage, startTransition }}>
       {children}
     </LanguageContext.Provider>
   );

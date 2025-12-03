@@ -15,7 +15,15 @@ import { useLanguage } from '../LanguageContext';
  */
 
 const LanguageTransition = () => {
-  const { isTransitioning } = useLanguage();
+  const { isTransitioning, targetLanguage } = useLanguage();
+
+  // Translation text based on TARGET language (where we're going)
+  const transitionText = {
+    pt: 'MUDANDO IDIOMA',
+    en: 'CHANGING LANGUAGE'
+  };
+
+  const displayText = targetLanguage ? transitionText[targetLanguage] : 'CHANGING LANGUAGE';
 
   return (
     <AnimatePresence>
@@ -111,7 +119,7 @@ const LanguageTransition = () => {
                 times: [0, 0.25, 0.75, 1],
               }}
             >
-              CHANGING LANGUAGE
+              {displayText}
             </motion.p>
           </motion.div>
 
