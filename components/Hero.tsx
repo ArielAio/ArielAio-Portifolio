@@ -86,7 +86,7 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
 
 const Hero: React.FC = React.memo(() => {
   const { language } = useLanguage();
-  const { tier, isLoading } = usePerformance();
+  const { enable3D, enableAnimations, isLoading } = usePerformance();
   const content = HERO_CONTENT[language];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -104,8 +104,8 @@ const Hero: React.FC = React.memo(() => {
     }
   };
 
-  // Only render Tesseract on High Tier and Desktop AND NOT loading
-  const showTesseract = tier === 'high' && !isLoading;
+  // Only render Tesseract if 3D is enabled and not loading
+  const showTesseract = enable3D && !isLoading;
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 perspective-1000">

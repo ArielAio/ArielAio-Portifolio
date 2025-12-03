@@ -196,7 +196,7 @@ export const PROJECTS_CONTENT = {
         title: "CodeWise — Plataforma EAD",
         description: "Plataforma de cursos online desenvolvida em Next.js, com foco em usabilidade, fluxo intuitivo de aprendizado e experiência otimizada para estudantes e criadores.",
         tags: ["Next.js", "LMS", "Educação Online"],
-        image: "/codewise.png",
+        image: "/CodeWise.png",
         link: "http://codewise-liart.vercel.app/",
         githubRepo: "https://github.com/ArielAio?tab=repositories",
       },
