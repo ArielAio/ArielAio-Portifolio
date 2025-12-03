@@ -4,6 +4,8 @@ import { ExternalLink, Briefcase, CheckCircle } from 'lucide-react';
 import { FEATURED_PROJECT } from '../constants';
 import { useLanguage } from '../LanguageContext';
 import { usePerformance } from '../PerformanceContext';
+import { useTheme } from '../ThemeContext';
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 /**
  * FeaturedProject Component
@@ -18,6 +20,8 @@ import { usePerformance } from '../PerformanceContext';
 const FeaturedProject: React.FC = React.memo(() => {
   const { language } = useLanguage();
   const { isLowPower } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const content = FEATURED_PROJECT[language];
 
   return (
@@ -50,7 +54,11 @@ const FeaturedProject: React.FC = React.memo(() => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative group"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 glass-card p-8 md:p-12 rounded-3xl border-2 border-green-500/30 hover:border-green-400/60 transition-all duration-500 relative overflow-hidden">
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 md:p-12 rounded-3xl border-2 border-green-500/30 hover:border-green-400/60 transition-all duration-500 relative overflow-hidden ${
+            theme === 'dark'
+              ? classes.effects.glass
+              : 'bg-white shadow-xl'
+          }`}>
             
             {/* Background Gradient Effect */}
             {!isLowPower && (
@@ -71,11 +79,11 @@ const FeaturedProject: React.FC = React.memo(() => {
               />
               
               {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent" />
+              <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gradient-to-t from-dark/80 via-dark/20 to-transparent' : 'bg-gradient-to-t from-gray-900/75 via-gray-900/10 to-transparent'}`} />
               
               {/* Badge Overlay */}
               <div className="absolute top-4 left-4">
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/90 backdrop-blur-md rounded-full text-white text-sm font-bold shadow-lg">
+                <span className={`inline-flex items-center gap-2 px-4 py-2 bg-green-500/90 backdrop-blur-md rounded-full ${classes.text.inverse} text-sm font-bold ${classes.shadow.lg}`}>
                   {content.badge}
                 </span>
               </div>
@@ -93,18 +101,18 @@ const FeaturedProject: React.FC = React.memo(() => {
               </div>
 
               {/* Title */}
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h3 className={`text-3xl md:text-4xl font-bold ${classes.text.primary} mb-4`}>
                 {content.title}
               </h3>
 
               {/* Description */}
-              <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-6">
+              <p className={`${classes.text.secondary} text-base md:text-lg leading-relaxed mb-6`}>
                 {content.description}
               </p>
 
               {/* Responsibilities List */}
               <div className="mb-8">
-                <h4 className="text-sm font-mono text-secondary uppercase tracking-wider mb-4">
+                <h4 className={`text-sm font-mono uppercase tracking-wider mb-4 ${theme === 'dark' ? 'text-secondary' : 'text-primary font-bold'}`}>
                   {language === 'pt' ? 'Responsabilidades:' : 'Responsibilities:'}
                 </h4>
                 <ul className="space-y-3">
@@ -115,9 +123,9 @@ const FeaturedProject: React.FC = React.memo(() => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="flex items-start gap-3 text-gray-400"
+                      className={`flex items-start gap-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'}`}
                     >
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`} />
                       <span className="text-sm md:text-base">{item}</span>
                     </motion.li>
                   ))}
@@ -129,7 +137,11 @@ const FeaturedProject: React.FC = React.memo(() => {
                 {content.tags.map((tag) => (
                   <span 
                     key={tag} 
-                    className="px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-xs font-mono backdrop-blur-sm"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono backdrop-blur-sm border ${
+                      theme === 'dark'
+                        ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                        : 'bg-green-100 border-green-400 text-green-800'
+                    }`}
                   >
                     {tag}
                   </span>

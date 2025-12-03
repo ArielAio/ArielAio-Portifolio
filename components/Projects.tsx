@@ -5,9 +5,13 @@ import { Project } from '../types';
 import { ExternalLink, Github } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { usePerformance } from '../PerformanceContext';
+import { useTheme } from '../ThemeContext';
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: string }> = ({ project, textDemo, textCode }) => {
   const { isLowPower } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const ref = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0.5);
@@ -63,15 +67,15 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
       viewport={{ once: true, margin: "-50px" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`group relative rounded-2xl bg-dark/50 perspective-1000 h-[450px] w-full isolate ${
+      className={`group relative rounded-2xl ${theme === 'dark' ? 'bg-dark/50' : 'bg-white/95'} perspective-1000 h-[450px] w-full isolate ${
         project.type === 'leadership' 
           ? 'border-2 border-green-500/30 hover:border-green-400/60 shadow-green-500/20' 
-          : 'border border-white/5 hover:border-primary/30'
+          : `border ${classes.border.default} hover:border-primary/30`
       }`} 
     >
       <div 
         style={!isLowPower ? { transform: "translateZ(20px)", transformStyle: "preserve-3d" } : {}}
-        className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl bg-dark"
+        className={`absolute inset-0 rounded-2xl overflow-hidden ${classes.shadow.xl} ${theme === 'dark' ? 'bg-dark' : 'bg-white'}`}
       >
         {/* Image Layer */}
         <div className="absolute inset-0" style={!isLowPower ? { transform: "translateZ(0px)" } : {}}>
@@ -84,7 +88,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
           />
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/90 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gradient-to-t from-dark via-dark/90 to-transparent' : 'bg-gradient-to-t from-gray-900/95 via-gray-900/85 to-gray-900/20'} opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500`}></div>
 
         {/* Light Sweep - Conditional */}
         {!isLowPower && (
@@ -93,7 +97,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
                     initial={{ x: "-100%", opacity: 0 }}
                     whileHover={{ x: "200%", opacity: 1 }}
                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                    className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+                    className={`w-1/2 h-full bg-gradient-to-r from-transparent ${theme === 'dark' ? 'via-white/20' : 'via-gray-900/30'} to-transparent -skew-x-12`}
                 />
             </div>
         )}
@@ -110,13 +114,19 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
                     </span>
                 )}
                 
-                <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg" style={{ textShadow: "0 4px 10px rgba(0,0,0,0.5)" }}>
+                <h3 className={`text-2xl font-bold mb-2 drop-shadow-lg ${
+                    theme === 'dark' ? 'text-white' : 'text-white'
+                }`} style={{ textShadow: "0 4px 10px rgba(0,0,0,0.5)" }}>
                     {project.title}
                 </h3>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
                     {project.tags.map((tag: string) => (
-                        <span key={tag} className="text-[10px] md:text-xs font-mono px-2 py-1 bg-white/10 rounded-md text-gray-300 backdrop-blur-sm border border-white/5 shadow-sm">
+                        <span key={tag} className={`text-[10px] md:text-xs font-mono px-2 py-1 rounded-md backdrop-blur-sm border ${
+                            theme === 'dark'
+                                ? `${classes.bg.overlay} ${classes.text.secondary} ${classes.border.subtle}`
+                                : 'bg-white/90 text-gray-900 border-gray-300'
+                        } ${classes.shadow.sm}`}>
                             {tag}
                         </span>
                     ))}
@@ -124,7 +134,9 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
             </div>
 
             <div className="pointer-events-auto transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 md:max-h-0 md:group-hover:max-h-[200px]">
-                <p className="text-gray-300 text-sm mb-6 line-clamp-3 md:line-clamp-none drop-shadow-md">
+                <p className={`text-sm mb-6 line-clamp-3 md:line-clamp-none drop-shadow-md ${
+                    theme === 'dark' ? classes.text.secondary : 'text-gray-100'
+                }`}>
                     {project.description}
                 </p>
                 
@@ -140,7 +152,7 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
                         }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg transition-colors cursor-pointer"
+                        className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary ${classes.text.inverse} rounded-lg text-sm font-bold ${classes.shadow.lg} transition-colors cursor-pointer`}
                     >
                         <ExternalLink size={16} /> {textDemo}
                     </motion.a>
@@ -151,13 +163,17 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
                             rel="noopener noreferrer"
                             whileHover={{ 
                                 scale: 1.05, 
-                                backgroundColor: "rgba(255, 255, 255, 0.15)",
-                                borderColor: "rgba(255, 255, 255, 0.5)",
-                                boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)"
+                                backgroundColor: theme === 'dark' ? "rgba(168, 85, 247, 0.2)" : "rgba(168, 85, 247, 0.15)",
+                                borderColor: theme === 'dark' ? "rgba(168, 85, 247, 0.6)" : "rgba(168, 85, 247, 0.5)",
+                                boxShadow: theme === 'dark' ? "0 0 20px rgba(168, 85, 247, 0.4)" : "0 0 20px rgba(168, 85, 247, 0.3)"
                             }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-lg text-sm font-bold backdrop-blur-md border border-white/10 shadow-lg transition-colors cursor-pointer"
+                            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold backdrop-blur-md transition-all duration-300 cursor-pointer border-2 ${
+                                theme === 'dark'
+                                    ? 'bg-white/10 text-white border-white/30 shadow-lg hover:text-white'
+                                    : 'bg-gray-800/90 text-white border-gray-700 shadow-lg hover:text-white'
+                            }`}
                         >
                             <Github size={16} /> {textCode}
                         </motion.a>
@@ -184,6 +200,8 @@ const ProjectCard: React.FC<{ project: Project; textDemo: string; textCode: stri
 
 const Projects: React.FC = React.memo(() => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const content = PROJECTS_CONTENT[language];
 
   return (
@@ -197,7 +215,7 @@ const Projects: React.FC = React.memo(() => {
           className="mb-16 text-left"
         >
            <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2 block">{content.portfolioLabel}</span>
-          <h2 className="text-4xl md:text-6xl font-bold mb-4">{content.title}</h2>
+          <h2 className={`text-4xl md:text-6xl font-bold mb-4 ${classes.text.primary}`}>{content.title}</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 perspective-1000">

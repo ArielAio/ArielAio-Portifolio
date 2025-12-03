@@ -4,80 +4,86 @@ import { ArrowDown, Download } from 'lucide-react';
 import { HERO_CONTENT } from '../constants';
 import { useLanguage } from '../LanguageContext';
 import { usePerformance } from '../PerformanceContext';
+import { useTheme } from '../ThemeContext';
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 const MagneticButton = ({ children, onClick, href, className }: any) => {
   const { isLowPower } = usePerformance();
   const ref = useRef<HTMLAnchorElement>(null);
+  const [isHovered, setIsHovered] = React.useState(false);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const scale = useMotionValue(1);
 
-  const springConfig = { damping: 20, stiffness: 300, mass: 0.1 };
+  const springConfig = { damping: 15, stiffness: 200 };
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
+  const springScale = useSpring(scale, { damping: 10, stiffness: 200 });
 
-  const rotateX = useTransform(springY, [-20, 20], [15, -15]); 
-  const rotateY = useTransform(springX, [-20, 20], [-15, 15]); 
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    // Disable magnetic effect on touch devices OR low power devices
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if ((typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) || isLowPower) return;
 
     if (!ref.current) return;
-    const { clientX, clientY } = e;
-    const { height, width, left, top } = ref.current.getBoundingClientRect();
-    const middleX = clientX - (left + width / 2);
-    const middleY = clientY - (top + height / 2);
+    const rect = ref.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
     
-    x.set(middleX * 0.25);
-    y.set(middleY * 0.25);
+    springX.set(x);
+    springY.set(y);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    scale.set(1.05);
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
+    setIsHovered(false);
+    springX.set(0);
+    springY.set(0);
+    scale.set(1);
   };
 
-  // On low power, we remove 3D transforms to save GPU
-  const style = isLowPower ? {} : { 
-    x: springX, 
-    y: springY,
-    rotateX,
-    rotateY,
-    transformStyle: "preserve-3d" as any
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    scale.set(0.95);
+    setTimeout(() => scale.set(isHovered ? 1.05 : 1), 100);
+    onClick?.(e);
   };
 
   return (
     <motion.a
       ref={ref}
       href={href}
-      onClick={onClick}
-      style={style}
+      onClick={handleClick}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className={`${className} relative overflow-visible group perspective-500`}
+      className={`${className} relative overflow-hidden`}
+      style={isLowPower ? {} : {
+        x: springX,
+        y: springY,
+        scale: springScale,
+        transformOrigin: 'center',
+        willChange: 'transform'
+      }}
     >
-      <motion.span 
-        className="relative z-10 block" 
-        style={!isLowPower ? { transform: "translateZ(15px)" } : {}}
-      >
+      <span className="relative block pointer-events-none select-none">
         {children}
-      </motion.span>
+      </span>
       
       {!isLowPower && (
         <>
-            <motion.div 
-                initial={{ x: "-100%", opacity: 0 }}
-                whileHover={{ x: "150%", opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 pointer-events-none rounded-[inherit]"
-                style={{ transform: "translateZ(1px)" }}
-            />
-            <motion.div 
-                className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[inherit]"
-                style={{ transform: "translateZ(-1px)" }}
-            />
+          <motion.div 
+            initial={{ x: "-100%", opacity: 0 }}
+            animate={{ x: isHovered ? "150%" : "-100%", opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 pointer-events-none rounded-[inherit]"
+          />
+          <motion.div 
+            className="absolute inset-0 bg-white/5 rounded-[inherit] pointer-events-none"
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+          />
         </>
       )}
     </motion.a>
@@ -87,6 +93,8 @@ const MagneticButton = ({ children, onClick, href, className }: any) => {
 const Hero: React.FC = React.memo(() => {
   const { language } = useLanguage();
   const { enable3D, enableAnimations, isLoading } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const content = HERO_CONTENT[language];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -140,8 +148,8 @@ const Hero: React.FC = React.memo(() => {
           className="gpu-accelerated"
         >
           <motion.span 
-            whileHover={{ scale: 1.05, borderColor: "rgba(255,255,255,0.3)", z: 20 }}
-            className="inline-block py-1 px-3 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6 backdrop-blur-sm cursor-default transform-style-3d transition-colors"
+            whileHover={{ scale: 1.05, borderColor: theme === 'dark' ? "rgba(255,255,255,0.3)" : "rgba(15,23,42,0.3)", z: 20 }}
+            className={`inline-block py-1 px-3 rounded-full ${classes.bg.card} ${classes.border.default} text-primary text-sm font-medium mb-6 backdrop-blur-sm cursor-default transform-style-3d transition-colors`}
           >
             {content.greeting}
           </motion.span>
@@ -151,7 +159,7 @@ const Hero: React.FC = React.memo(() => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 gpu-accelerated select-none"
+          className={`text-5xl md:text-7xl lg:text-9xl font-bold tracking-tight mb-6 bg-clip-text text-transparent ${theme === 'dark' ? 'bg-gradient-to-b from-white to-white/50' : 'bg-gradient-to-b from-gray-900 to-gray-700'} gpu-accelerated select-none`}
         >
           {content.name}
         </motion.h1>
@@ -160,7 +168,7 @@ const Hero: React.FC = React.memo(() => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-xl md:text-3xl text-gray-400 font-light mb-8 max-w-3xl mx-auto gpu-accelerated"
+          className={`text-xl md:text-3xl ${classes.text.secondary} font-light mb-8 max-w-3xl mx-auto gpu-accelerated`}
         >
           {content.role}
         </motion.h2>
@@ -169,7 +177,7 @@ const Hero: React.FC = React.memo(() => {
            initial={{ opacity: 0 }}
            animate={{ opacity: 1 }}
            transition={{ duration: 0.8, delay: 0.8 }}
-           className="text-gray-400 max-w-2xl mx-auto mb-12 text-lg leading-relaxed gpu-accelerated"
+           className={`${classes.text.secondary} max-w-2xl mx-auto mb-12 text-lg leading-relaxed gpu-accelerated`}
         >
           {content.description}
         </motion.p>
@@ -184,7 +192,11 @@ const Hero: React.FC = React.memo(() => {
             <MagneticButton
               href="#featured-project"
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleScroll(e, 'featured-project')}
-              className="inline-flex h-12 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#6366f1,55%,#000103)] bg-[length:200%_100%] px-8 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-slate-50 cursor-pointer shadow-lg w-full sm:w-auto"
+              className={`inline-flex h-14 animate-shimmer items-center justify-center rounded-2xl px-10 font-black text-base transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer w-full sm:w-auto ${
+                theme === 'dark' 
+                  ? 'bg-[linear-gradient(110deg,#000103,45%,#6366f1,55%,#000103)] bg-[length:200%_100%] border-2 border-primary/30 text-white focus:ring-offset-slate-50'
+                  : 'bg-[linear-gradient(110deg,#cbd5e1,45%,#6366f1,55%,#cbd5e1)] bg-[length:200%_100%] border-2 border-indigo-400 text-slate-900 focus:ring-offset-slate-900'
+              }`}
             >
               {content.ctaProjects}
             </MagneticButton>
@@ -192,7 +204,11 @@ const Hero: React.FC = React.memo(() => {
             <MagneticButton
               href="#contact"
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleScroll(e, 'contact')}
-              className="px-8 py-3.5 bg-transparent border border-white/20 text-white font-bold rounded-full cursor-pointer hover:bg-white/5 transition-colors w-full sm:w-auto"
+              className={`px-10 py-4 rounded-2xl font-black text-base cursor-pointer transition-all w-full sm:w-auto border-2 ${
+                theme === 'dark'
+                  ? 'bg-white/5 border-white/30 text-white hover:bg-white/10 hover:border-white/50'
+                  : 'bg-gray-100 border-gray-400 text-gray-900 hover:bg-gray-200 hover:border-gray-500'
+              }`}
             >
               {content.ctaContact}
             </MagneticButton>
@@ -203,15 +219,19 @@ const Hero: React.FC = React.memo(() => {
             download="Curriculo_Ariel_Aio.pdf"
             whileHover={{ scale: 1.05, y: -5, z: 20, rotateX: 10 }}
             whileTap={{ scale: 0.95, z: -10 }}
-            className="flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all group backdrop-blur-sm cursor-pointer transform-style-3d shadow-lg"
+            className={`flex items-center gap-3 px-6 py-2.5 rounded-2xl border hover:border-primary/50 transition-all group backdrop-blur-sm cursor-pointer transform-style-3d ${
+              theme === 'dark'
+                ? `${classes.bg.card} ${classes.border.default} ${classes.effects.glassHover} ${classes.shadow.lg}`
+                : 'bg-white border-gray-200 shadow-lg hover:shadow-xl'
+            }`}
             style={{ transformStyle: "preserve-3d" }}
           >
-             <div className="p-2 bg-primary/20 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+             <div className={`p-2 bg-primary/20 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors`}>
                 <Download size={18} />
              </div>
              <div className="text-left">
-                <span className="block text-[10px] text-gray-400 font-mono uppercase tracking-wider leading-none mb-1" style={{ transform: "translateZ(5px)" }}>{content.resumeLabel}</span>
-                <span className="block text-sm font-bold text-white group-hover:text-primary transition-colors leading-none" style={{ transform: "translateZ(10px)" }}>{content.ctaResume}</span>
+                <span className={`block text-[10px] ${classes.text.muted} font-mono uppercase tracking-wider leading-none mb-1`} style={{ transform: "translateZ(5px)" }}>{content.resumeLabel}</span>
+                <span className={`block text-sm font-bold ${classes.text.primary} group-hover:text-primary transition-colors leading-none`} style={{ transform: "translateZ(10px)" }}>{content.ctaResume}</span>
              </div>
           </motion.a>
 

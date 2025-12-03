@@ -5,9 +5,13 @@ import { Cpu, Server, Layout } from 'lucide-react';
 import { Skill } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { usePerformance } from '../PerformanceContext';
+import { useTheme } from '../ThemeContext';
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => {
   const { isLowPower } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const ref = useRef<HTMLDivElement>(null);
   
   const x = useMotionValue(0);
@@ -89,7 +93,7 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
         rotateY,
         transformStyle: "preserve-3d" as any
       } : {}}
-      className="group relative h-full rounded-2xl bg-white/5 p-[1px] transition-all perspective-1000 overflow-hidden" 
+      className={`group relative h-full rounded-2xl ${classes.bg.card} p-[1px] transition-all perspective-1000 overflow-hidden`}
     >
       {/* 1. DYNAMIC BORDER GLOW LAYER - Conditional */}
       {!isLowPower && (
@@ -101,7 +105,7 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
         />
       )}
       
-      <div className="relative h-full w-full rounded-2xl bg-dark/90 p-6 backdrop-blur-md transform-style-3d overflow-hidden">
+      <div className={`relative h-full w-full rounded-2xl ${theme === 'dark' ? 'bg-dark/90' : 'bg-white'} p-6 backdrop-blur-md transform-style-3d overflow-hidden`}>
         
         {/* 2. INNER SPOTLIGHT - Conditional */}
         {!isLowPower && (
@@ -126,14 +130,14 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
         <div className="relative z-10 flex flex-col h-full transform-style-3d">
             <div className="flex justify-between items-start mb-6 transform-style-3d">
             <motion.div 
-                className="p-3 bg-white/5 rounded-xl text-primary border border-white/5 group-hover:border-primary/50 group-hover:bg-primary/20 transition-colors duration-300 shadow-lg"
+                className={`p-3 ${classes.bg.card} rounded-xl text-primary ${classes.border.subtle} group-hover:border-primary/50 group-hover:bg-primary/20 transition-colors duration-300 ${classes.shadow.lg}`}
                 style={!isLowPower ? { x: iconX, y: iconY, z: 40 } : {}}
             >
                 {getIcon(skill.category)}
             </motion.div>
             
             <span 
-                className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-secondary border border-secondary/20 group-hover:bg-secondary/10 transition-colors" 
+                className={`px-3 py-1 ${classes.bg.card} rounded-full text-xs font-mono text-secondary border border-secondary/20 group-hover:bg-secondary/10 transition-colors`}
                 style={!isLowPower ? { transform: "translateZ(30px)" } : {}}
             >
                 {skill.time}
@@ -141,14 +145,14 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
             </div>
 
             <h3 
-                className="text-xl font-bold mb-3 text-white group-hover:text-primary transition-colors" 
+                className={`text-xl font-bold mb-3 ${classes.text.primary} group-hover:text-primary transition-colors`}
                 style={!isLowPower ? { transform: "translateZ(35px)" } : {}}
             >
             {skill.name}
             </h3>
             
             <p 
-                className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors" 
+                className={`${classes.text.secondary} text-sm leading-relaxed ${theme === 'dark' ? 'group-hover:text-gray-300' : 'group-hover:text-gray-900'} transition-colors`}
                 style={!isLowPower ? { transform: "translateZ(20px)" } : {}}
             >
             {skill.description}
@@ -161,6 +165,8 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
 
 const Skills: React.FC = React.memo(() => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const content = SKILLS_CONTENT[language];
 
   return (
@@ -171,7 +177,7 @@ const Skills: React.FC = React.memo(() => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold mb-4"
+            className={`text-4xl md:text-5xl font-bold mb-4 ${classes.text.primary}`}
           >
             {content.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">{content.titleHighlight}</span>
           </motion.h2>
@@ -180,7 +186,7 @@ const Skills: React.FC = React.memo(() => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-gray-400 max-w-2xl mx-auto"
+            className={`${classes.text.secondary} max-w-2xl mx-auto`}
           >
             {content.description}
           </motion.p>

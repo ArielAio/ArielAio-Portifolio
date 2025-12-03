@@ -9,10 +9,13 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 import LoadingScreen from './components/LoadingScreen';
 import LanguageTransition from './components/LanguageTransition'; // Circular reveal transition
+import ThemeTransition from './components/ThemeTransition'; // Theme change transition
 import { Particles } from './components/Particles';
 import { motion, useScroll, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
 import { LanguageProvider } from './LanguageContext';
+import { ThemeProvider, useTheme } from './ThemeContext';
 import { PerformanceProvider, usePerformance } from './PerformanceContext';
+import { useThemeClasses } from './hooks/useThemeClasses';
 
 const AppContent: React.FC = () => {
   const { scrollYProgress } = useScroll();
@@ -23,6 +26,8 @@ const AppContent: React.FC = () => {
   });
 
   const { tier, isLowPower, isLoading, completeLoading, enableParticles, enable3D } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
 
   // PERFORMANCE OPTIMIZATION: 
   // Use MotionValues for high-frequency updates (mouse move).
@@ -124,7 +129,7 @@ const AppContent: React.FC = () => {
         height: 32,
         width: 32,
         backgroundColor: "rgba(0, 0, 0, 0)", // Use rgba instead of transparent
-        border: "1px solid rgba(255,255,255,0.3)",
+        border: theme === 'dark' ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(0,0,0,0.3)",
         x: "-50%",
         y: "-50%",
         scale: 1,
@@ -161,7 +166,7 @@ const AppContent: React.FC = () => {
   const particleCount = enableParticles ? (tier === 'high' ? 60 : 30) : 0;
 
   return (
-    <div className={`bg-dark min-h-screen text-white selection:bg-primary selection:text-white ${isDesktop ? 'cursor-none' : ''}`}>
+    <div className={`${classes.bg.base} min-h-screen ${classes.text.primary} selection:bg-primary ${classes.text.inverse} ${isDesktop ? 'cursor-none' : ''}`}>
       
       {/* LOADING SCREEN OVERLAY */}
       <AnimatePresence>
@@ -170,6 +175,9 @@ const AppContent: React.FC = () => {
 
       {/* LANGUAGE TRANSITION OVERLAY */}
       <LanguageTransition />
+
+      {/* THEME TRANSITION OVERLAY */}
+      <ThemeTransition />
 
       {/* GLOBAL BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -258,10 +266,10 @@ const AppContent: React.FC = () => {
             />
             
             <motion.div
-                className="fixed top-0 left-0 rounded-full bg-white pointer-events-none z-[100]"
+                className="fixed top-0 left-0 rounded-full pointer-events-none z-[100]"
                 animate={{
                     scale: cursorVariant === 'button' ? 0.5 : 1,
-                    backgroundColor: cursorVariant === 'button' ? '#6366f1' : '#ffffff'
+                    backgroundColor: cursorVariant === 'button' ? '#6366f1' : (theme === 'dark' ? '#ffffff' : '#000000')
                 }}
                 style={{
                     width: 8,
@@ -299,11 +307,13 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <LanguageProvider>
-      <PerformanceProvider>
-        <AppContent />
-      </PerformanceProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <PerformanceProvider>
+          <AppContent />
+        </PerformanceProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

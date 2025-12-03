@@ -4,11 +4,15 @@ import { CONTACT_CONTENT, SOCIALS } from '../constants';
 import { Send, CheckCircle, Copy, Check, Mail, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { usePerformance } from '../PerformanceContext';
+import { useTheme } from '../ThemeContext';
+import { useThemeClasses } from '../hooks/useThemeClasses';
 import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = React.memo(() => {
   const { language } = useLanguage();
   const { isLowPower } = usePerformance();
+  const { theme } = useTheme();
+  const classes = useThemeClasses();
   const content = CONTACT_CONTENT[language];
 
   const [formData, setFormData] = useState({
@@ -98,9 +102,13 @@ const Contact: React.FC = React.memo(() => {
       <div className={`absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full pointer-events-none opacity-50 animate-pulse ${isLowPower ? 'blur-[40px]' : 'blur-[60px] md:blur-[100px]'}`}></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="glass-card max-w-4xl mx-auto rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl relative overflow-hidden">
+        <div className={`max-w-4xl mx-auto rounded-3xl p-8 md:p-12 border relative overflow-hidden ${
+          theme === 'dark'
+            ? `${classes.effects.glass} ${classes.border.default} ${classes.shadow.xl}`
+            : 'bg-white border-gray-200 shadow-2xl'
+        }`}>
           
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className={`absolute top-0 left-0 w-full h-1 ${theme === 'dark' ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent' : 'bg-gradient-to-r from-transparent via-slate-900/20 to-transparent'}`}></div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             
@@ -109,23 +117,29 @@ const Contact: React.FC = React.memo(() => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-3xl md:text-4xl font-bold mb-6"
+                className={`text-3xl md:text-4xl font-bold mb-6 ${classes.text.primary}`}
               >
                 {content.title} <span className="text-secondary">{content.titleHighlight}</span>
               </motion.h2>
-              <p className="text-gray-400 mb-8">
+              <p className={`${classes.text.secondary} mb-8`}>
                 {content.description}
               </p>
 
               <motion.div 
                 className="flex items-center gap-3 p-4 rounded-xl border transition-colors cursor-pointer mb-8 group relative overflow-hidden"
                 onClick={handleCopyEmail}
-                initial={{ backgroundColor: "rgba(255, 255, 255, 0.05)", borderColor: "rgba(255, 255, 255, 0.05)" }}
-                whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                initial={{ 
+                    backgroundColor: theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 1)", 
+                    borderColor: theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(156, 163, 175, 1)" 
+                }}
+                whileHover={{ 
+                    scale: 1.02, 
+                    backgroundColor: theme === 'dark' ? "rgba(255, 255, 255, 0.1)" : "rgba(249, 250, 251, 1)" 
+                }}
                 whileTap={{ scale: 0.97 }}
                 animate={{
-                    borderColor: copied ? "rgba(34, 197, 94, 0.5)" : "rgba(255, 255, 255, 0.05)",
-                    backgroundColor: copied ? "rgba(34, 197, 94, 0.1)" : "rgba(255, 255, 255, 0.05)"
+                    borderColor: copied ? "rgba(34, 197, 94, 0.5)" : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(156, 163, 175, 1)"),
+                    backgroundColor: copied ? "rgba(34, 197, 94, 0.1)" : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 1)")
                 }}
               >
                 {/* Shine effect on copy - Disable on low power */}
@@ -138,16 +152,32 @@ const Contact: React.FC = React.memo(() => {
                     />
                 )}
 
-                <div className={`p-2 rounded-lg transition-colors relative z-10 ${copied ? "bg-green-500/20 text-green-400" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"}`}>
+                <div className={`p-2 rounded-lg transition-colors relative z-10 ${
+                    copied 
+                        ? "bg-green-500/20 text-green-400" 
+                        : theme === 'dark'
+                            ? "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"
+                            : "bg-primary/20 text-primary group-hover:bg-primary group-hover:text-white"
+                }`}>
                     <Mail size={20} />
                 </div>
                 <div className="flex-1 relative z-10">
-                    <p className={`text-xs font-mono transition-colors ${copied ? "text-green-400 font-bold" : "text-gray-500"}`}>
+                    <p className={`text-xs font-mono transition-colors ${
+                        copied 
+                            ? "text-green-400 font-bold" 
+                            : theme === 'dark' ? "text-gray-500" : "text-gray-600"
+                    }`}>
                         {copied ? content.copied : content.copyEmail}
                     </p>
-                    <p className="text-sm md:text-base text-gray-200 font-mono">arielaio@hotmail.com</p>
+                    <p className={`text-sm md:text-base font-mono ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>arielaio@hotmail.com</p>
                 </div>
-                <div className={`p-2 transition-colors relative z-10 ${copied ? "text-green-400" : "text-gray-400 group-hover:text-white"}`}>
+                <div className={`p-2 transition-colors relative z-10 ${
+                    copied 
+                        ? "text-green-400" 
+                        : theme === 'dark'
+                            ? "text-gray-400 group-hover:text-white"
+                            : "text-gray-600 group-hover:text-gray-900"
+                }`}>
                     <AnimatePresence mode="wait">
                         {copied ? (
                             <motion.div
@@ -180,19 +210,44 @@ const Contact: React.FC = React.memo(() => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, rotate: 10, backgroundColor: "rgba(255,255,255,0.15)" }}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      rotate: 5,
+                      boxShadow: theme === 'dark' 
+                        ? "0 0 25px rgba(99, 102, 241, 0.5)" 
+                        : "0 0 20px rgba(99, 102, 241, 0.4)"
+                    }}
                     whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center transition-colors text-gray-300 hover:text-white border border-white/5 cursor-pointer"
+                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer border-2 group relative overflow-hidden ${
+                      theme === 'dark'
+                        ? 'bg-white/10 border-white/30 text-white hover:bg-primary hover:border-primary hover:text-white shadow-lg'
+                        : 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 text-white hover:bg-primary hover:border-primary shadow-xl'
+                    }`}
                   >
-                    <social.icon size={20} />
+                    {/* Shine effect on hover */}
+                    {!isLowPower && (
+                      <motion.div
+                        initial={{ x: "-100%" }}
+                        whileHover={{ x: "200%" }}
+                        transition={{ duration: 0.6 }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
+                      />
+                    )}
+                    <social.icon size={22} className="relative z-10" />
                   </motion.a>
                 ))}
               </div>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="group">
-                <label className="block text-sm font-medium text-gray-400 mb-1 group-focus-within:text-primary transition-colors">{content.formName}</label>
+                <label className={`block text-sm font-bold mb-2 transition-colors ${
+                  theme === 'dark' 
+                    ? 'text-gray-300 group-focus-within:text-primary' 
+                    : 'text-gray-700 group-focus-within:text-primary'
+                }`}>
+                  {content.formName}
+                </label>
                 <div className="relative">
                   <input 
                     type="text" 
@@ -200,14 +255,27 @@ const Contact: React.FC = React.memo(() => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full bg-dark/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none transition-all peer relative z-10 focus:bg-dark/80" 
+                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 ${
+                      theme === 'dark'
+                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
+                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
+                    } shadow-lg`}
                     placeholder={content.formNamePlaceholder} 
                   />
-                  <div className="absolute inset-0 rounded-lg border border-transparent peer-focus:border-primary peer-focus:shadow-[0_0_10px_rgba(99,102,241,0.2)] transition-all pointer-events-none"></div>
+                  <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
+                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  }`}></div>
                 </div>
               </div>
+              
               <div className="group">
-                <label className="block text-sm font-medium text-gray-400 mb-1 group-focus-within:text-primary transition-colors">{content.formEmail}</label>
+                <label className={`block text-sm font-bold mb-2 transition-colors ${
+                  theme === 'dark' 
+                    ? 'text-gray-300 group-focus-within:text-primary' 
+                    : 'text-gray-700 group-focus-within:text-primary'
+                }`}>
+                  {content.formEmail}
+                </label>
                 <div className="relative">
                   <input 
                     type="email" 
@@ -215,46 +283,87 @@ const Contact: React.FC = React.memo(() => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full bg-dark/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none transition-all peer relative z-10 focus:bg-dark/80" 
+                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 ${
+                      theme === 'dark'
+                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
+                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
+                    } shadow-lg`}
                     placeholder={content.formEmailPlaceholder} 
                   />
-                   <div className="absolute inset-0 rounded-lg border border-transparent peer-focus:border-primary peer-focus:shadow-[0_0_10px_rgba(99,102,241,0.2)] transition-all pointer-events-none"></div>
+                   <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
+                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  }`}></div>
                 </div>
               </div>
+              
               <div className="group">
-                <label className="block text-sm font-medium text-gray-400 mb-1 group-focus-within:text-primary transition-colors">{content.formMessage}</label>
+                <label className={`block text-sm font-bold mb-2 transition-colors ${
+                  theme === 'dark' 
+                    ? 'text-gray-300 group-focus-within:text-primary' 
+                    : 'text-gray-700 group-focus-within:text-primary'
+                }`}>
+                  {content.formMessage}
+                </label>
                 <div className="relative">
                   <textarea 
                     name="message"
                     required
-                    rows={4} 
+                    rows={5} 
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-dark/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none transition-all peer relative z-10 focus:bg-dark/80" 
+                    className={`w-full rounded-xl p-4 font-medium focus:outline-none transition-all peer relative z-10 resize-none ${
+                      theme === 'dark'
+                        ? 'bg-white/10 border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-primary/50'
+                        : 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:bg-gray-50 focus:border-primary'
+                    } shadow-lg`}
                     placeholder={content.formMessagePlaceholder}
                   ></textarea>
-                   <div className="absolute inset-0 rounded-lg border border-transparent peer-focus:border-primary peer-focus:shadow-[0_0_10px_rgba(99,102,241,0.2)] transition-all pointer-events-none"></div>
+                   <div className={`absolute inset-0 rounded-xl border-2 border-transparent peer-focus:border-primary transition-all pointer-events-none ${
+                    theme === 'dark' ? 'peer-focus:shadow-[0_0_20px_rgba(99,102,241,0.3)]' : 'peer-focus:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  }`}></div>
                 </div>
               </div>
               
               <motion.button 
                 type="submit"
                 disabled={status === 'sending'}
-                whileHover={{ scale: status === 'sending' ? 1 : 1.02 }}
-                whileTap={{ scale: status === 'sending' ? 1 : 0.95 }}
-                className={`w-full font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg overflow-hidden relative ${
+                whileHover={{ 
+                  scale: status === 'sending' ? 1 : 1.03,
+                  boxShadow: status === 'sending' ? undefined : (theme === 'dark' 
+                    ? '0 0 40px rgba(99, 102, 241, 0.6), 0 10px 30px rgba(99, 102, 241, 0.3)'
+                    : '0 0 30px rgba(99, 102, 241, 0.4), 0 10px 25px rgba(99, 102, 241, 0.2)')
+                }}
+                whileTap={{ scale: status === 'sending' ? 1 : 0.97 }}
+                className={`w-full font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 overflow-hidden relative group text-lg ${
                   status === 'success' 
-                    ? 'bg-green-500 text-white' 
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-[0_0_30px_rgba(34,197,94,0.5)]' 
                     : status === 'error'
-                    ? 'bg-red-500 text-white'
+                    ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-[0_0_30px_rgba(239,68,68,0.5)]'
                     : status === 'sending'
-                    ? 'bg-gradient-to-r from-primary to-secondary text-white opacity-70 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 hover:shadow-primary/20'
+                    ? 'bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] animate-shimmer text-white opacity-80 cursor-not-allowed'
+                    : theme === 'dark'
+                    ? 'bg-gradient-to-r from-primary via-indigo-500 to-secondary text-white shadow-[0_10px_40px_rgba(99,102,241,0.3)] hover:shadow-[0_0_50px_rgba(99,102,241,0.5)] border-2 border-primary/30'
+                    : 'bg-gradient-to-r from-indigo-600 via-primary to-purple-600 text-white shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] border-2 border-indigo-400'
                 }`}
               >
-                 {/* Shine effect on button - Conditional */}
+                 {/* Animated background shimmer */}
                  {!isLowPower && status === 'idle' && (
-                    <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+                    <motion.div 
+                      initial={{ x: '-100%' }}
+                      animate={{ x: '200%' }}
+                      transition={{ 
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatDelay: 1,
+                        ease: "easeInOut"
+                      }}
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 z-0"
+                    />
+                 )}
+                 
+                 {/* Glow effect on hover */}
+                 {!isLowPower && status === 'idle' && (
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-primary/20 via-white/10 to-secondary/20 blur-xl z-0"></div>
                  )}
                  
                  <span className="relative z-10 flex items-center gap-2">
@@ -277,7 +386,7 @@ const Contact: React.FC = React.memo(() => {
           </div>
         </div>
         
-        <div className="text-center mt-12 text-gray-500 text-sm">
+        <div className={`text-center mt-12 ${classes.text.muted} text-sm`}>
             <p>&copy; {new Date().getFullYear()} Ariel Aio. {content.footerRights}</p>
         </div>
       </div>

@@ -59,20 +59,41 @@
         scroll-behavior: smooth;
       }
       body {
-        background-color: #020617;
-        color: #f8fafc;
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Dark Theme (Default) */
+      body[data-theme="dark"] {
+        background-color: #020617;
+        color: #f8fafc;
+      }
+      
+      /* Light Theme */
+      body[data-theme="light"] {
+        background-color: #f9fafb;
+        color: #111827;
       }
 
       /* Global Grid Pattern */
       .bg-grid-pattern {
         background-size: 50px 50px;
-        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         mask-image: linear-gradient(to bottom, transparent, 5%, white, 95%, transparent);
         -webkit-mask-image: linear-gradient(to bottom, transparent, 5%, white, 95%, transparent);
+      }
+      
+      /* Grid Pattern - Dark Theme */
+      body[data-theme="dark"] .bg-grid-pattern {
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      }
+      
+      /* Grid Pattern - Light Theme */
+      body[data-theme="light"] .bg-grid-pattern {
+        background-image: linear-gradient(to right, rgba(17, 24, 39, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(17, 24, 39, 0.05) 1px, transparent 1px);
       }
       
       /* Noise Texture for Cinematic Feel */
@@ -98,15 +119,29 @@
       ::-webkit-scrollbar {
         width: 8px;
       }
-      ::-webkit-scrollbar-track {
+      
+      /* Scrollbar - Dark Theme */
+      body[data-theme="dark"]::-webkit-scrollbar-track {
         background: #020617;
       }
-      ::-webkit-scrollbar-thumb {
+      body[data-theme="dark"]::-webkit-scrollbar-thumb {
         background: #334155;
         border-radius: 4px;
       }
-      ::-webkit-scrollbar-thumb:hover {
+      body[data-theme="dark"]::-webkit-scrollbar-thumb:hover {
         background: #475569;
+      }
+      
+      /* Scrollbar - Light Theme */
+      body[data-theme="light"]::-webkit-scrollbar-track {
+        background: #f3f4f6;
+      }
+      body[data-theme="light"]::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+      }
+      body[data-theme="light"]::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
       }
       
       /* Glassmorphism Performance fallback */
