@@ -1,36 +1,154 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+
+import React, { useRef } from 'react';
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { SKILLS } from '../constants';
 import { Cpu, Server, Layout } from 'lucide-react';
+import { Skill } from '../types';
 
-const Skills: React.FC = () => {
-  const divRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  
+  // Mouse Position (Pixels)
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Normalized Mouse Position (0 to 1) for Tilt
+  const xPct = useMotionValue(0.5);
+  const yPct = useMotionValue(0.5);
+
+  // Physics: Softer stiffness for a "fluid" feel, slightly more damping to prevent jitter
+  const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
+
+  const rotateX = useSpring(useTransform(yPct, [0, 1], [5, -5]), springConfig);
+  const rotateY = useSpring(useTransform(xPct, [0, 1], [-5, 5]), springConfig);
+
+  // Parallax for icon - moves against the tilt for depth
+  const iconX = useSpring(useTransform(xPct, [0, 1], [-6, 6]), springConfig);
+  const iconY = useSpring(useTransform(yPct, [0, 1], [-6, 6]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current) return;
-    const div = divRef.current;
-    const rect = div.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const handleMouseEnter = () => {
-    setOpacity(1);
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    x.set(mouseX);
+    y.set(mouseY);
+    
+    xPct.set(mouseX / rect.width);
+    yPct.set(mouseY / rect.height);
   };
 
   const handleMouseLeave = () => {
-    setOpacity(0);
+    x.set(0);
+    y.set(0);
+    xPct.set(0.5);
+    yPct.set(0.5);
   };
 
   const getIcon = (category: string) => {
     switch (category) {
-      case 'frontend': return <Layout size={20} />;
-      case 'backend': return <Server size={20} />;
-      default: return <Cpu size={20} />;
+      case 'frontend': return <Layout size={28} />;
+      case 'backend': return <Server size={28} />;
+      default: return <Cpu size={28} />;
     }
   };
 
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d"
+      }}
+      className="group relative h-full rounded-2xl bg-white/5 p-[1px] transition-all perspective-1000 overflow-hidden" // p-[1px] creates the border space
+    >
+      {/* 1. DYNAMIC BORDER GLOW LAYER (Behind Content) */}
+      <motion.div
+        className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+            background: useMotionTemplate`
+                radial-gradient(
+                600px circle at ${x}px ${y}px,
+                rgba(99, 102, 241, 0.5),
+                transparent 40%
+                )
+            `
+        }}
+      />
+      
+      {/* Main Content Container (Dark Background to mask the border layer) */}
+      <div className="relative h-full w-full rounded-2xl bg-dark/90 p-6 backdrop-blur-md transform-style-3d overflow-hidden">
+        
+        {/* 2. INNER SPOTLIGHT (Subtle ambient light inside) */}
+        <motion.div
+            className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-0"
+            style={{
+                background: useMotionTemplate`
+                    radial-gradient(
+                    400px circle at ${x}px ${y}px,
+                    rgba(168, 85, 247, 0.1),
+                    transparent 80%
+                    )
+                `
+            }}
+        />
+
+        {/* 3. Gradient Sweep Effect */}
+        <motion.div 
+            className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-30 transition duration-700 rounded-2xl z-0 mix-blend-soft-light"
+            style={{
+                background: "linear-gradient(115deg, transparent, rgba(255,255,255,0.4), transparent)",
+                x: useTransform(xPct, [0, 1], ["-150%", "150%"]), // Wide sweep
+            }}
+        />
+
+        {/* Content Layers with Depth */}
+        <div className="relative z-10 flex flex-col h-full transform-style-3d">
+            <div className="flex justify-between items-start mb-6 transform-style-3d">
+            <motion.div 
+                className="p-3 bg-white/5 rounded-xl text-primary border border-white/5 group-hover:border-primary/50 group-hover:bg-primary/20 transition-colors duration-300 shadow-lg"
+                style={{ x: iconX, y: iconY, z: 40 }} // High Z for parallax pop
+            >
+                {getIcon(skill.category)}
+            </motion.div>
+            
+            <span 
+                className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-secondary border border-secondary/20 group-hover:bg-secondary/10 transition-colors" 
+                style={{ transform: "translateZ(30px)" }}
+            >
+                {skill.time}
+            </span>
+            </div>
+
+            <h3 
+                className="text-xl font-bold mb-3 text-white group-hover:text-primary transition-colors" 
+                style={{ transform: "translateZ(35px)" }}
+            >
+            {skill.name}
+            </h3>
+            
+            <p 
+                className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors" 
+                style={{ transform: "translateZ(20px)" }}
+            >
+            {skill.description}
+            </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const Skills: React.FC = () => {
   return (
     <section className="py-24 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-6">
@@ -54,55 +172,9 @@ const Skills: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Spotlight Container */}
-        <div 
-            ref={divRef}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative"
-        >
-            {/* Spotlight Overlay Layer */}
-            <div 
-                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 z-10"
-                style={{
-                    opacity,
-                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(99, 102, 241, 0.15), transparent 40%)`
-                }}
-            />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 perspective-1000">
           {SKILLS.map((skill, index) => (
-            <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ 
-                y: -5, 
-                transition: { duration: 0.2, delay: 0 }
-               }}
-              className="group glass-card p-6 rounded-xl border border-white/5 transition-all relative overflow-hidden z-20 bg-dark/40 hover:bg-dark/60"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-              <div className="flex justify-between items-start mb-4 relative z-10">
-                <div className="p-3 bg-white/5 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                  {getIcon(skill.category)}
-                </div>
-                <span className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-secondary border border-secondary/20 group-hover:bg-secondary/10 transition-colors">
-                  {skill.time}
-                </span>
-              </div>
-
-              <h3 className="text-xl font-bold mb-3 text-white group-hover:text-primary transition-colors relative z-10">
-                {skill.name}
-              </h3>
-              
-              <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors relative z-10">
-                {skill.description}
-              </p>
-            </motion.div>
+            <SkillCard key={skill.name} skill={skill} index={index} />
           ))}
         </div>
       </div>

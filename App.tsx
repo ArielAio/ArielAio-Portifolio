@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -161,17 +160,17 @@ const App: React.FC = () => {
         <div className="absolute inset-0 bg-noise opacity-[0.03]"></div>
         
         {/* Ambient Moving Orbs (Living Background) - Optimized with GPU transform */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[100px] animate-blob gpu-accelerated"></div>
-        <div className="absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[100px] animate-blob animation-delay-4000 gpu-accelerated"></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[100px] animate-blob animation-delay-2000 gpu-accelerated"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[128px] animate-blob gpu-accelerated"></div>
+        <div className="absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-secondary/10 rounded-full blur-[128px] animate-blob animation-delay-4000 gpu-accelerated"></div>
+        <div className="hidden md:block absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[128px] animate-blob animation-delay-2000 gpu-accelerated"></div>
 
         {/* Particles / Fireflies Effect - Reduced on mobile */}
         <Particles quantity={isDesktop ? 50 : 20} />
 
-        {/* Global Spotlight (Mouse Tracking Fog) - Optimized */}
+        {/* Global Spotlight (Mouse Tracking Fog) - Optimized with blend mode for depth */}
         {isDesktop && (
             <motion.div 
-                className="absolute w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none will-change-transform"
+                className="absolute w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none will-change-transform mix-blend-soft-light"
                 style={{
                     left: cursorX, // Use spring physics for smooth spotlight
                     top: cursorY,

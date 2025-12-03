@@ -12,10 +12,12 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
 
-  // Spring physics configuration for smooth 'weighty' feel
-  const springConfig = { damping: 20, stiffness: 200, mass: 0.5 };
+  // Spring physics configuration - Softer stiffness for a more elegant, less jerky feel
+  const springConfig = { stiffness: 250, damping: 20, mass: 0.5 };
   
-  // Create sprung values for rotation
+  // Create sprung values for rotation - Reduced range to +/- 10 degrees for a subtle effect
+  // Logic: Mouse Left (0) -> RotateY Negative (Left side pops up/forward) -> Actually Left side goes back (Push effect)
+  // Logic: Mouse Top (0) -> RotateX Positive (Top side pops up/forward) -> Actually Top side goes back (Push effect)
   const rotateY = useSpring(useTransform(x, [0, 1], [-10, 10]), springConfig);
   const rotateX = useSpring(useTransform(y, [0, 1], [10, -10]), springConfig);
 
@@ -76,9 +78,19 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         {/* Overlay - Mobile: Always Visible (opacity-90) | Desktop: Hidden -> Hover (opacity-90) */}
         <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/90 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
+        {/* Light Sweep / Shimmer Effect - Runs on Hover */}
+        <div className="absolute inset-0 z-10 rounded-2xl overflow-hidden pointer-events-none mix-blend-overlay">
+            <motion.div
+                initial={{ x: "-100%", opacity: 0 }}
+                whileHover={{ x: "200%", opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+            />
+        </div>
+
         {/* Content Container - True 3D Floating Effect (Z-Index increased) */}
         <div 
-            className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none transform-style-3d"
+            className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none transform-style-3d z-20"
             style={{ transform: "translateZ(60px)" }} 
         >
             {/* Title & Tags - Shift up on hover for desktop */}
@@ -112,14 +124,21 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                         <ExternalLink size={16} /> Demo
                     </a>
                     {project.githubRepo && (
-                        <a 
+                        <motion.a 
                             href={project.githubRepo} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-lg text-sm font-bold hover:bg-white/20 transition-all backdrop-blur-md border border-white/10 shadow-lg active:scale-95"
+                            whileHover={{ 
+                                scale: 1.05, 
+                                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                boxShadow: "0 0 15px rgba(255, 255, 255, 0.2)"
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-lg text-sm font-bold backdrop-blur-md border border-white/10 shadow-lg"
                         >
                             <Github size={16} /> Code
-                        </a>
+                        </motion.a>
                     )}
                 </div>
             </div>
